@@ -62,7 +62,13 @@ module Api
       end
 
       def student_payload(student)
-        student.slice(:id, :name, :university, :grade, :self_pr, :github_url, :portfolio_url)
+        student.slice(
+          :id, :name, :university, :grade, :faculty,
+          :desired_job_type, :desired_location,
+          :self_pr, :gakuchika, :skills, :qualifications,
+          :intern_experience, :job_hunting_status,
+          :github_url, :portfolio_url
+        )
       end
     end
   end

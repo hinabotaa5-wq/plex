@@ -50,7 +50,15 @@ export type StudentListItem = {
   name: string;
   university: string;
   grade: string;
+  faculty: string | null;
+  desired_job_type: string | null;
+  desired_location: string[] | string | null;
   self_pr: string | null;
+  gakuchika: string | null;
+  skills: string | null;
+  qualifications: string | null;
+  intern_experience: string | null;
+  job_hunting_status: string | null;
   github_url: string | null;
   portfolio_url: string | null;
 };

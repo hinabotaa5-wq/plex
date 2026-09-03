@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, createMessage, getMessages } from "@/lib/api";
@@ -18,11 +19,16 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const router = useRouter();
   const { user, logout } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -31,7 +37,18 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
     if (open && scoutId) {
       setBody("");
       setError(null);
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) {
+        try {
+          dialog.showModal();
+        } catch {
+          try {
+            dialog.close();
+            dialog.showModal();
+          } catch {
+            // 他のモーダルがトップレイヤーに残っている場合は次の tick に任せる
+          }
+        }
+      }
     } else if (dialog.open) {
       dialog.close();
     }
@@ -90,7 +107,7 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
     }
   }
 
-  return (
+  const dialog = (
     <dialog
       ref={dialogRef}
       onClose={onClose}
@@ -103,7 +120,7 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
         </div>
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => dialogRef.current?.close()}
           className="text-sm text-zinc-500 hover:text-zinc-900"
         >
           閉じる
@@ -164,4 +181,6 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
       </form>
     </dialog>
   );
+
+  return mounted ? createPortal(dialog, document.body) : null;
 }

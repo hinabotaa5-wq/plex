@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { PrefectureSelector } from "@/components/ui/PrefectureSelector";
 import { CompanySentScouts } from "@/components/dashboard/CompanySentScouts";
 import { ScoutModal } from "@/components/dashboard/ScoutModal";
+import { StudentDetailModal } from "@/components/dashboard/StudentDetailModal";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, getSentScouts, getStudents } from "@/lib/api";
 import type { SentScout, StudentListItem, StudentSearchParams } from "@/lib/types";
@@ -36,6 +37,7 @@ export function CompanyStudents() {
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [detailStudent, setDetailStudent] = useState<StudentListItem | null>(null);
   const [selected, setSelected] = useState<StudentListItem | null>(null);
   const [draftFilters, setDraftFilters] = useState<StudentSearchParams>(EMPTY_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<StudentSearchParams>(EMPTY_FILTERS);
@@ -129,6 +131,11 @@ export function CompanyStudents() {
       appliedFilters.has_intern_experience ||
       (appliedFilters.desired_locations?.length ?? 0) > 0
   );
+
+  function handleScoutFromDetail(student: StudentListItem) {
+    setDetailStudent(null);
+    window.setTimeout(() => setSelected(student), 0);
+  }
 
   function handleSent(_studentId: number, scout?: SentScout) {
     if (scout) {
@@ -257,50 +264,52 @@ export function CompanyStudents() {
           </p>
         ) : (
           <ul className="mt-6 space-y-4">
-            {students.map((student) => {
-              const sent = sentIds.has(student.id);
-              return (
-                <li
-                  key={student.id}
-                  className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-base font-semibold text-zinc-900">{student.name}</h3>
-                      <p className="mt-1 text-sm text-zinc-500">
-                        {student.university} / {student.grade}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={sent}
-                      onClick={() => setSelected(student)}
-                      className="shrink-0 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:bg-zinc-300 disabled:text-zinc-600"
-                    >
-                      {sent ? "送信済み" : "スカウトする"}
-                    </button>
+            {students.map((student) => (
+              <li
+                key={student.id}
+                className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-semibold text-zinc-900">{student.name}</h3>
+                    <dl className="mt-2 space-y-1 text-sm text-zinc-500">
+                      <div>
+                        <dt className="inline">大学名：</dt>
+                        <dd className="inline">{student.university}</dd>
+                      </div>
+                      <div>
+                        <dt className="inline">学部：</dt>
+                        <dd className="inline">{student.faculty || "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="inline">学年：</dt>
+                        <dd className="inline">{student.grade}</dd>
+                      </div>
+                    </dl>
                   </div>
-                  {student.self_pr && (
-                    <p className="mt-4 text-sm leading-6 text-zinc-700">{student.self_pr}</p>
-                  )}
-                  {student.github_url && (
-                    <a
-                      href={student.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 inline-block text-sm text-zinc-500 underline"
-                    >
-                      GitHub
-                    </a>
-                  )}
-                </li>
-              );
-            })}
+                  <button
+                    type="button"
+                    onClick={() => setDetailStudent(student)}
+                    className="shrink-0 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                  >
+                    詳細を見る
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </section>
 
       <CompanySentScouts scouts={sentScouts} />
+
+      <StudentDetailModal
+        student={detailStudent}
+        open={detailStudent !== null}
+        sent={detailStudent ? sentIds.has(detailStudent.id) : false}
+        onClose={() => setDetailStudent(null)}
+        onScout={handleScoutFromDetail}
+      />
 
       <ScoutModal
         student={selected}

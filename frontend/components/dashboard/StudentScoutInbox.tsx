@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChatModal } from "@/components/dashboard/ChatModal";
+import { ScoutDetailModal } from "@/components/dashboard/ScoutDetailModal";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, getScouts, updateScoutStatus } from "@/lib/api";
 import type { ReceivedScout, ScoutStatus } from "@/lib/types";
@@ -20,6 +21,7 @@ export function StudentScoutInbox() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [detailScoutId, setDetailScoutId] = useState<number | null>(null);
   const [chatScout, setChatScout] = useState<ReceivedScout | null>(null);
 
   useEffect(() => {
@@ -65,6 +67,20 @@ export function StudentScoutInbox() {
     }
   }
 
+  const detailScout = scouts.find((scout) => scout.id === detailScoutId) ?? null;
+
+  function handleOpenDetail(id: number) {
+    setChatScout(null);
+    window.setTimeout(() => setDetailScoutId(id), 0);
+  }
+
+  function handleMessage() {
+    if (!detailScout) return;
+    const scout = detailScout;
+    setDetailScoutId(null);
+    window.setTimeout(() => setChatScout(scout), 0);
+  }
+
   if (loading) {
     return <p className="text-sm text-zinc-500">受信スカウトを読み込み中...</p>;
   }
@@ -87,47 +103,40 @@ export function StudentScoutInbox() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-semibold text-zinc-900">{scout.subject}</h3>
-                  <p className="mt-1 text-sm text-zinc-500">{scout.company.name}</p>
+                  <h3 className="text-base font-semibold text-zinc-900">{scout.company.name}</h3>
+                  <p className="mt-1 text-sm text-zinc-500">{scout.subject}</p>
                 </div>
                 <span className="shrink-0 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
                   {STATUS_LABEL[scout.status]}
                 </span>
               </div>
-              <p className="mt-4 text-sm leading-6 text-zinc-700">{scout.body}</p>
-              {scout.status === "sent" && (
-                <div className="mt-5 flex gap-2">
-                  <button
-                    type="button"
-                    disabled={updatingId === scout.id}
-                    onClick={() => handleStatus(scout.id, "accepted")}
-                    className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60"
-                  >
-                    承諾
-                  </button>
-                  <button
-                    type="button"
-                    disabled={updatingId === scout.id}
-                    onClick={() => handleStatus(scout.id, "declined")}
-                    className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
-                  >
-                    辞退
-                  </button>
-                </div>
-              )}
-              {scout.status === "accepted" && (
+              <div className="mt-4">
                 <button
                   type="button"
-                  onClick={() => setChatScout(scout)}
-                  className="mt-5 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                  onClick={() => handleOpenDetail(scout.id)}
+                  className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
                 >
-                  メッセージ
+                  詳細を見る
                 </button>
-              )}
+              </div>
             </li>
           ))}
         </ul>
       )}
+
+      <ScoutDetailModal
+        scout={detailScout}
+        open={detailScout !== null}
+        updating={detailScout !== null && updatingId === detailScout.id}
+        onClose={() => setDetailScoutId(null)}
+        onAccept={() => {
+          if (detailScout) void handleStatus(detailScout.id, "accepted");
+        }}
+        onDecline={() => {
+          if (detailScout) void handleStatus(detailScout.id, "declined");
+        }}
+        onMessage={handleMessage}
+      />
 
       <ChatModal
         scoutId={chatScout?.id ?? null}
