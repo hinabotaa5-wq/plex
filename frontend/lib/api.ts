@@ -1,5 +1,13 @@
 import { clearToken, getToken } from "@/lib/auth-storage";
-import type { AuthResponse, MeResponse } from "@/lib/types";
+import type {
+  AuthResponse,
+  CreateScoutPayload,
+  MeResponse,
+  ReceivedScout,
+  ScoutsResponse,
+  ScoutStatus,
+  StudentsResponse,
+} from "@/lib/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
@@ -58,4 +66,26 @@ export function loginRequest(email: string, password: string) {
 
 export function meRequest() {
   return request<MeResponse>("/api/v1/me");
+}
+
+export function getStudents() {
+  return request<StudentsResponse>("/api/v1/students");
+}
+
+export function createScout(payload: CreateScoutPayload) {
+  return request<{ scout: { id: number; status: ScoutStatus } }>("/api/v1/scouts", {
+    method: "POST",
+    body: JSON.stringify({ scout: payload }),
+  });
+}
+
+export function getScouts() {
+  return request<ScoutsResponse>("/api/v1/scouts");
+}
+
+export function updateScoutStatus(id: number, status: Extract<ScoutStatus, "accepted" | "declined">) {
+  return request<{ scout: ReceivedScout }>(`/api/v1/scouts/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ scout: { status } }),
+  });
 }

@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { CompanyStudents } from "@/components/dashboard/CompanyStudents";
+import { StudentScoutInbox } from "@/components/dashboard/StudentScoutInbox";
 import { useAuth } from "@/components/AuthProvider";
 import { isCompanyProfile, isStudentProfile } from "@/lib/types";
 
@@ -27,7 +29,7 @@ export default function DashboardPage() {
   const displayName = user.profile?.name ?? user.email;
 
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 py-16">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-16">
       <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
         <p className="text-sm text-zinc-500">マイページ</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">
@@ -82,6 +84,9 @@ export default function DashboardPage() {
           ログアウト
         </button>
       </div>
+
+      {user.role === "company" && <CompanyStudents />}
+      {user.role === "student" && <StudentScoutInbox />}
     </main>
   );
 }
