@@ -6,6 +6,7 @@ import type {
   ReceivedScout,
   ScoutsResponse,
   ScoutStatus,
+  SignupPayload,
   StudentsResponse,
 } from "@/lib/types";
 
@@ -66,6 +67,13 @@ export function loginRequest(email: string, password: string) {
 
 export function meRequest() {
   return request<MeResponse>("/api/v1/me");
+}
+
+export function signupRequest(payload: SignupPayload) {
+  return request<AuthResponse>("/api/v1/signup", {
+    method: "POST",
+    body: JSON.stringify({ user: payload }),
+  });
 }
 
 export function getStudents() {

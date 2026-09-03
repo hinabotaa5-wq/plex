@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/components/AuthProvider";
@@ -95,6 +96,13 @@ export default function LoginPage() {
             {submitting ? "ログイン中..." : "ログイン"}
           </button>
         </form>
+
+        <p className="mt-6 text-center text-sm text-zinc-500">
+          アカウントをお持ちでない方は{" "}
+          <Link href="/signup" className="font-medium text-zinc-900 underline">
+            新規登録
+          </Link>
+        </p>
 
         <div className="mt-6 rounded-lg bg-zinc-50 px-3 py-3 text-xs leading-6 text-zinc-600">
           <p className="font-medium text-zinc-700">デモ用アカウント</p>

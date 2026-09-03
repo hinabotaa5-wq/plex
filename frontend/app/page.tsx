@@ -27,12 +27,20 @@ export default function HomePage() {
             マイページ
           </Link>
         ) : (
-          <Link
-            href="/login"
-            className="rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-700"
-          >
-            ログイン
-          </Link>
+          <>
+            <Link
+              href="/login"
+              className="rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-700"
+            >
+              ログイン
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded-lg border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+            >
+              新規登録
+            </Link>
+          </>
         )}
       </div>
     </main>

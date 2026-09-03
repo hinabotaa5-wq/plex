@@ -71,6 +71,31 @@ export type CreateScoutPayload = {
   body: string;
 };
 
+export type SignupPayload =
+  | {
+      email: string;
+      password: string;
+      role: "student";
+      student_profile_attributes: {
+        name: string;
+        university: string;
+        grade: string;
+        self_pr?: string | null;
+        github_url?: string | null;
+        portfolio_url?: string | null;
+      };
+    }
+  | {
+      email: string;
+      password: string;
+      role: "company";
+      company_profile_attributes: {
+        name: string;
+        description?: string | null;
+        website_url?: string | null;
+      };
+    };
+
 export function isStudentProfile(
   user: User
 ): user is User & { profile: StudentProfile } {

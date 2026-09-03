@@ -8,15 +8,16 @@ import {
   useMemo,
   useState,
 } from "react";
-import { loginRequest, meRequest } from "@/lib/api";
+import { loginRequest, meRequest, signupRequest } from "@/lib/api";
 import { clearToken, getToken, setToken } from "@/lib/auth-storage";
-import type { User } from "@/lib/types";
+import type { SignupPayload, User } from "@/lib/types";
 
 type AuthContextValue = {
   user: User | null;
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (payload: SignupPayload) => Promise<void>;
   logout: () => void;
   refreshMe: () => Promise<void>;
 };
@@ -58,6 +59,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(data.user);
   }, []);
 
+  const signup = useCallback(async (payload: SignupPayload) => {
+    const data = await signupRequest(payload);
+    setToken(data.token);
+    setTokenState(data.token);
+    setUser(data.user);
+  }, []);
+
   const logout = useCallback(() => {
     clearToken();
     setTokenState(null);
@@ -65,8 +73,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, token, loading, login, logout, refreshMe }),
-    [user, token, loading, login, logout, refreshMe]
+    () => ({ user, token, loading, login, signup, logout, refreshMe }),
+    [user, token, loading, login, signup, logout, refreshMe]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
