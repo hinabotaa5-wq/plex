@@ -2,15 +2,33 @@ module Api
   module V1
     class ScoutsController < BaseController
       before_action :authenticate_user!
-      before_action :require_student!, only: [ :index, :update ]
+      before_action :require_student!, only: [ :update ]
       before_action :require_company!, only: [ :create ]
 
       def index
-        scouts = current_user.student_profile.scouts
-          .includes(:company_profile)
-          .order(created_at: :desc)
+        if current_user.company?
+          unless current_user.company_profile
+            return render json: { errors: [ "Company profile is required" ] }, status: :forbidden
+          end
 
-        render json: { scouts: scouts.map { |scout| scout_payload_for_student(scout) } }
+          scouts = current_user.company_profile.scouts
+            .includes(:student_profile)
+            .order(created_at: :desc)
+
+          render json: { scouts: scouts.map { |scout| scout_payload_for_company(scout) } }
+        elsif current_user.student?
+          unless current_user.student_profile
+            return render json: { errors: [ "Student profile is required" ] }, status: :forbidden
+          end
+
+          scouts = current_user.student_profile.scouts
+            .includes(:company_profile)
+            .order(created_at: :desc)
+
+          render json: { scouts: scouts.map { |scout| scout_payload_for_student(scout) } }
+        else
+          render json: { errors: [ "Forbidden" ] }, status: :forbidden
+        end
       end
 
       def create

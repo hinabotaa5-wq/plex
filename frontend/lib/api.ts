@@ -6,6 +6,8 @@ import type {
   ReceivedScout,
   ScoutsResponse,
   ScoutStatus,
+  SentScout,
+  SentScoutsResponse,
   SignupPayload,
   StudentsResponse,
 } from "@/lib/types";
@@ -81,7 +83,7 @@ export function getStudents() {
 }
 
 export function createScout(payload: CreateScoutPayload) {
-  return request<{ scout: { id: number; status: ScoutStatus } }>("/api/v1/scouts", {
+  return request<{ scout: SentScout }>("/api/v1/scouts", {
     method: "POST",
     body: JSON.stringify({ scout: payload }),
   });
@@ -89,6 +91,10 @@ export function createScout(payload: CreateScoutPayload) {
 
 export function getScouts() {
   return request<ScoutsResponse>("/api/v1/scouts");
+}
+
+export function getSentScouts() {
+  return request<SentScoutsResponse>("/api/v1/scouts");
 }
 
 export function updateScoutStatus(id: number, status: Extract<ScoutStatus, "accepted" | "declined">) {

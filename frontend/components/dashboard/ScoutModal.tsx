@@ -4,13 +4,13 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, createScout } from "@/lib/api";
-import type { StudentListItem } from "@/lib/types";
+import type { SentScout, StudentListItem } from "@/lib/types";
 
 type ScoutModalProps = {
   student: StudentListItem | null;
   open: boolean;
   onClose: () => void;
-  onSent: (studentId: number) => void;
+  onSent: (studentId: number, scout?: SentScout) => void;
 };
 
 export function ScoutModal({ student, open, onClose, onSent }: ScoutModalProps) {
@@ -45,12 +45,12 @@ export function ScoutModal({ student, open, onClose, onSent }: ScoutModalProps) 
     setSubmitting(true);
     setErrors([]);
     try {
-      await createScout({
+      const data = await createScout({
         student_profile_id: student.id,
         subject,
         body,
       });
-      onSent(student.id);
+      onSent(student.id, data.scout);
       onClose();
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {

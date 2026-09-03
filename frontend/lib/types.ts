@@ -57,12 +57,30 @@ export type ReceivedScout = {
   };
 };
 
+export type SentScout = {
+  id: number;
+  status: ScoutStatus;
+  subject: string;
+  body: string;
+  created_at: string;
+  student: {
+    id: number;
+    name: string;
+    university: string;
+    grade: string;
+  };
+};
+
 export type StudentsResponse = {
   students: StudentListItem[];
 };
 
 export type ScoutsResponse = {
   scouts: ReceivedScout[];
+};
+
+export type SentScoutsResponse = {
+  scouts: SentScout[];
 };
 
 export type CreateScoutPayload = {
