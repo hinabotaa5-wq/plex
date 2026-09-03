@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { ChatModal } from "@/components/dashboard/ChatModal";
 import type { ScoutStatus, SentScout } from "@/lib/types";
 
 const STATUS_LABEL: Record<ScoutStatus, string> = {
@@ -13,6 +15,8 @@ function formatDate(value: string) {
 }
 
 export function CompanySentScouts({ scouts }: { scouts: SentScout[] }) {
+  const [chatScout, setChatScout] = useState<SentScout | null>(null);
+
   return (
     <section>
       <h2 className="text-lg font-semibold text-zinc-900">送信済みスカウト</h2>
@@ -38,10 +42,26 @@ export function CompanySentScouts({ scouts }: { scouts: SentScout[] }) {
               </div>
               <p className="mt-4 text-sm font-medium text-zinc-900">{scout.subject}</p>
               <p className="mt-2 text-xs text-zinc-500">送信日: {formatDate(scout.created_at)}</p>
+              {scout.status === "accepted" && (
+                <button
+                  type="button"
+                  onClick={() => setChatScout(scout)}
+                  className="mt-4 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                >
+                  メッセージ
+                </button>
+              )}
             </li>
           ))}
         </ul>
       )}
+
+      <ChatModal
+        scoutId={chatScout?.id ?? null}
+        title={chatScout ? `${chatScout.student.name}さん` : ""}
+        open={chatScout !== null}
+        onClose={() => setChatScout(null)}
+      />
     </section>
   );
 }

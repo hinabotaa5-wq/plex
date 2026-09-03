@@ -83,6 +83,14 @@ export type SentScoutsResponse = {
   scouts: SentScout[];
 };
 
+export type ChatMessage = {
+  id: number;
+  body: string;
+  created_at: string;
+  user_id: number;
+  sender_role: UserRole;
+};
+
 export type CreateScoutPayload = {
   student_profile_id: number;
   subject: string;

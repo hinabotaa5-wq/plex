@@ -1,6 +1,7 @@
 import { clearToken, getToken } from "@/lib/auth-storage";
 import type {
   AuthResponse,
+  ChatMessage,
   CreateScoutPayload,
   MeResponse,
   ReceivedScout,
@@ -101,5 +102,16 @@ export function updateScoutStatus(id: number, status: Extract<ScoutStatus, "acce
   return request<{ scout: ReceivedScout }>(`/api/v1/scouts/${id}`, {
     method: "PATCH",
     body: JSON.stringify({ scout: { status } }),
+  });
+}
+
+export function getMessages(scoutId: number) {
+  return request<{ messages: ChatMessage[] }>(`/api/v1/scouts/${scoutId}/messages`);
+}
+
+export function createMessage(scoutId: number, body: string) {
+  return request<{ message: ChatMessage }>(`/api/v1/scouts/${scoutId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ message: { body } }),
   });
 }

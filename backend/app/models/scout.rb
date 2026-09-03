@@ -1,6 +1,7 @@
 class Scout < ApplicationRecord
   belongs_to :company_profile
   belongs_to :student_profile
+  has_many :messages, dependent: :destroy
 
   enum :status, { sent: 0, accepted: 1, declined: 2 }
 

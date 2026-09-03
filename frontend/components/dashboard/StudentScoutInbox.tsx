@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ChatModal } from "@/components/dashboard/ChatModal";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, getScouts, updateScoutStatus } from "@/lib/api";
 import type { ReceivedScout, ScoutStatus } from "@/lib/types";
@@ -19,6 +20,7 @@ export function StudentScoutInbox() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [chatScout, setChatScout] = useState<ReceivedScout | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,10 +115,26 @@ export function StudentScoutInbox() {
                   </button>
                 </div>
               )}
+              {scout.status === "accepted" && (
+                <button
+                  type="button"
+                  onClick={() => setChatScout(scout)}
+                  className="mt-5 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                >
+                  メッセージ
+                </button>
+              )}
             </li>
           ))}
         </ul>
       )}
+
+      <ChatModal
+        scoutId={chatScout?.id ?? null}
+        title={chatScout ? chatScout.company.name : ""}
+        open={chatScout !== null}
+        onClose={() => setChatScout(null)}
+      />
     </section>
   );
 }
