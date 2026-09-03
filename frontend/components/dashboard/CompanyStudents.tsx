@@ -1,12 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CompanySentScouts } from "@/components/dashboard/CompanySentScouts";
 import { ScoutModal } from "@/components/dashboard/ScoutModal";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, getSentScouts, getStudents } from "@/lib/api";
-import type { SentScout, StudentListItem } from "@/lib/types";
+import type { SentScout, StudentListItem, StudentSearchParams } from "@/lib/types";
+
+const GRADE_OPTIONS = [
+  "大学1年",
+  "大学2年",
+  "大学3年",
+  "大学4年",
+  "修士1年",
+  "修士2年",
+] as const;
+
+const EMPTY_FILTERS: StudentSearchParams = {
+  q: "",
+  grade: "",
+  has_github: false,
+};
 
 export function CompanyStudents() {
   const router = useRouter();
@@ -14,8 +29,11 @@ export function CompanyStudents() {
   const [students, setStudents] = useState<StudentListItem[]>([]);
   const [sentScouts, setSentScouts] = useState<SentScout[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<StudentListItem | null>(null);
+  const [draftFilters, setDraftFilters] = useState<StudentSearchParams>(EMPTY_FILTERS);
+  const [appliedFilters, setAppliedFilters] = useState<StudentSearchParams>(EMPTY_FILTERS);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +62,51 @@ export function CompanyStudents() {
     };
   }, [logout, router]);
 
+  async function fetchStudents(params: StudentSearchParams) {
+    setSearching(true);
+    setError(null);
+    try {
+      const data = await getStudents(params);
+      setStudents(data.students);
+      setAppliedFilters(params);
+    } catch (err: unknown) {
+      if (err instanceof ApiError && err.status === 401) {
+        logout();
+        router.push("/login");
+        return;
+      }
+      setError(err instanceof ApiError ? err.errors.join(", ") : "検索に失敗しました");
+    } finally {
+      setSearching(false);
+    }
+  }
+
+  function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void fetchStudents(draftFilters);
+  }
+
+  function handleGradeChange(grade: string) {
+    const next = { ...draftFilters, grade };
+    setDraftFilters(next);
+    void fetchStudents(next);
+  }
+
+  function handleHasGithubChange(hasGithub: boolean) {
+    const next = { ...draftFilters, has_github: hasGithub };
+    setDraftFilters(next);
+    void fetchStudents(next);
+  }
+
+  function handleClear() {
+    setDraftFilters(EMPTY_FILTERS);
+    void fetchStudents(EMPTY_FILTERS);
+  }
+
   const sentIds = new Set(sentScouts.map((scout) => scout.student.id));
+  const hasActiveFilters = Boolean(
+    appliedFilters.q?.trim() || appliedFilters.grade || appliedFilters.has_github
+  );
 
   function handleSent(_studentId: number, scout?: SentScout) {
     if (scout) {
@@ -59,7 +121,7 @@ export function CompanyStudents() {
     return <p className="text-sm text-zinc-500">学生一覧を読み込み中...</p>;
   }
 
-  if (error) {
+  if (error && students.length === 0 && !hasActiveFilters) {
     return <p className="text-sm text-red-700">{error}</p>;
   }
 
@@ -69,8 +131,78 @@ export function CompanyStudents() {
         <h2 className="text-lg font-semibold text-zinc-900">学生一覧</h2>
         <p className="mt-1 text-sm text-zinc-500">気になる学生にスカウトを送れます。</p>
 
-        {students.length === 0 ? (
-          <p className="mt-6 text-sm text-zinc-500">登録している学生はまだいません。</p>
+        <form
+          onSubmit={handleSearchSubmit}
+          className="mt-6 space-y-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm"
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <label className="block text-sm text-zinc-700 sm:col-span-2 lg:col-span-1">
+              <span className="mb-1 block font-medium">フリーワード</span>
+              <input
+                type="text"
+                value={draftFilters.q ?? ""}
+                onChange={(event) =>
+                  setDraftFilters((current) => ({ ...current, q: event.target.value }))
+                }
+                placeholder="名前・大学・自己PR"
+                className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500"
+              />
+            </label>
+
+            <label className="block text-sm text-zinc-700">
+              <span className="mb-1 block font-medium">学年</span>
+              <select
+                value={draftFilters.grade ?? ""}
+                onChange={(event) => handleGradeChange(event.target.value)}
+                className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500"
+              >
+                <option value="">すべて</option>
+                {GRADE_OPTIONS.map((grade) => (
+                  <option key={grade} value={grade}>
+                    {grade}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="flex items-end gap-2 pb-2 text-sm text-zinc-700">
+              <input
+                type="checkbox"
+                checked={Boolean(draftFilters.has_github)}
+                onChange={(event) => handleHasGithubChange(event.target.checked)}
+                className="size-4 rounded border-zinc-300"
+              />
+              <span className="font-medium">GitHubありのみ</span>
+            </label>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="submit"
+              className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+            >
+              検索
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            >
+              クリア
+            </button>
+          </div>
+        </form>
+
+        {error && <p className="mt-4 text-sm text-red-700">{error}</p>}
+
+        {searching ? (
+          <p className="mt-6 text-sm text-zinc-500">検索中...</p>
+        ) : students.length === 0 ? (
+          <p className="mt-6 text-sm text-zinc-500">
+            {hasActiveFilters
+              ? "条件に一致する学生が見つかりませんでした。"
+              : "登録している学生はまだいません。"}
+          </p>
         ) : (
           <ul className="mt-6 space-y-4">
             {students.map((student) => {

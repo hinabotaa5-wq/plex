@@ -10,6 +10,7 @@ import type {
   SentScout,
   SentScoutsResponse,
   SignupPayload,
+  StudentSearchParams,
   StudentsResponse,
 } from "@/lib/types";
 
@@ -79,8 +80,13 @@ export function signupRequest(payload: SignupPayload) {
   });
 }
 
-export function getStudents() {
-  return request<StudentsResponse>("/api/v1/students");
+export function getStudents(params: StudentSearchParams = {}) {
+  const query = new URLSearchParams();
+  if (params.q?.trim()) query.set("q", params.q.trim());
+  if (params.grade) query.set("grade", params.grade);
+  if (params.has_github) query.set("has_github", "true");
+  const qs = query.toString();
+  return request<StudentsResponse>(`/api/v1/students${qs ? `?${qs}` : ""}`);
 }
 
 export function createScout(payload: CreateScoutPayload) {

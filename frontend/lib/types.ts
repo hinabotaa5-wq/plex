@@ -75,6 +75,12 @@ export type StudentsResponse = {
   students: StudentListItem[];
 };
 
+export type StudentSearchParams = {
+  q?: string;
+  grade?: string;
+  has_github?: boolean;
+};
+
 export type ScoutsResponse = {
   scouts: ReceivedScout[];
 };
