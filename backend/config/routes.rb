@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       post "signup", to: "auth#signup"
       post "login", to: "auth#login"
       get "me", to: "auth#me"
+      resources :students, only: [ :index ]
+      resources :scouts, only: [ :index, :create, :update ]
     end
   end
 end

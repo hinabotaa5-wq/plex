@@ -14,6 +14,26 @@ module Api
       def authenticate_user!
         render json: { errors: [ "Unauthorized" ] }, status: :unauthorized unless current_user
       end
+
+      def require_company!
+        unless current_user.company?
+          return render json: { errors: [ "Forbidden" ] }, status: :forbidden
+        end
+
+        if current_user.company_profile.blank?
+          render json: { errors: [ "Company profile is required" ] }, status: :forbidden
+        end
+      end
+
+      def require_student!
+        unless current_user.student?
+          return render json: { errors: [ "Forbidden" ] }, status: :forbidden
+        end
+
+        if current_user.student_profile.blank?
+          render json: { errors: [ "Student profile is required" ] }, status: :forbidden
+        end
+      end
     end
   end
 end
