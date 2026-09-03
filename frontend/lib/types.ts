@@ -95,6 +95,7 @@ export type StudentSearchParams = {
   has_github?: boolean;
   has_qualifications?: boolean;
   has_intern_experience?: boolean;
+  desired_locations?: string[];
 };
 
 export type ScoutsResponse = {

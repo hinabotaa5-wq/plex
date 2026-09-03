@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { PrefectureSelector } from "@/components/ui/PrefectureSelector";
 import { CompanySentScouts } from "@/components/dashboard/CompanySentScouts";
 import { ScoutModal } from "@/components/dashboard/ScoutModal";
 import { useAuth } from "@/components/AuthProvider";
@@ -24,6 +25,7 @@ const EMPTY_FILTERS: StudentSearchParams = {
   has_github: false,
   has_qualifications: false,
   has_intern_experience: false,
+  desired_locations: [],
 };
 
 export function CompanyStudents() {
@@ -124,7 +126,8 @@ export function CompanyStudents() {
       appliedFilters.grade ||
       appliedFilters.has_github ||
       appliedFilters.has_qualifications ||
-      appliedFilters.has_intern_experience
+      appliedFilters.has_intern_experience ||
+      (appliedFilters.desired_locations?.length ?? 0) > 0
   );
 
   function handleSent(_studentId: number, scout?: SentScout) {
@@ -213,6 +216,16 @@ export function CompanyStudents() {
               />
               <span className="font-medium">インターン経験ありのみ</span>
             </label>
+          </div>
+
+          <div className="text-sm text-zinc-700">
+            <span className="mb-1 block font-medium">希望勤務地</span>
+            <PrefectureSelector
+              selected={draftFilters.desired_locations ?? []}
+              onChange={(desired_locations) =>
+                setDraftFilters((current) => ({ ...current, desired_locations }))
+              }
+            />
           </div>
 
           <div className="flex flex-wrap gap-2">
