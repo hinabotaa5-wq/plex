@@ -4,9 +4,11 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, updateProfile } from "@/lib/api";
+import { PrefectureSelector } from "@/components/ui/PrefectureSelector";
 import {
   isCompanyProfile,
   isStudentProfile,
+  parseDesiredLocations,
   type User,
 } from "@/lib/types";
 
@@ -18,6 +20,13 @@ const GRADE_OPTIONS = [
   "修士1年",
   "修士2年",
   "その他",
+] as const;
+
+const JOB_HUNTING_STATUS_OPTIONS = [
+  "準備中",
+  "活動中",
+  "内定あり",
+  "就活終了",
 ] as const;
 
 const inputClass =
@@ -42,12 +51,25 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
   const [name, setName] = useState("");
   const [university, setUniversity] = useState("");
   const [grade, setGrade] = useState("");
+  const [faculty, setFaculty] = useState("");
+  const [desiredJobType, setDesiredJobType] = useState("");
+  const [desiredLocation, setDesiredLocation] = useState<string[]>([]);
   const [selfPr, setSelfPr] = useState("");
+  const [gakuchika, setGakuchika] = useState("");
+  const [skills, setSkills] = useState("");
+  const [qualifications, setQualifications] = useState("");
+  const [internExperience, setInternExperience] = useState("");
+  const [jobHuntingStatus, setJobHuntingStatus] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [portfolioUrl, setPortfolioUrl] = useState("");
   const [department, setDepartment] = useState("");
   const [description, setDescription] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [numberOfEmployees, setNumberOfEmployees] = useState("");
+  const [salary, setSalary] = useState("");
+  const [location, setLocation] = useState("");
+  const [recruitingJobType, setRecruitingJobType] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -60,7 +82,15 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
         setName(user.profile.name);
         setUniversity(user.profile.university);
         setGrade(user.profile.grade);
+        setFaculty(user.profile.faculty ?? "");
+        setDesiredJobType(user.profile.desired_job_type ?? "");
+        setDesiredLocation(parseDesiredLocations(user.profile.desired_location));
         setSelfPr(user.profile.self_pr ?? "");
+        setGakuchika(user.profile.gakuchika ?? "");
+        setSkills(user.profile.skills ?? "");
+        setQualifications(user.profile.qualifications ?? "");
+        setInternExperience(user.profile.intern_experience ?? "");
+        setJobHuntingStatus(user.profile.job_hunting_status ?? "");
         setGithubUrl(user.profile.github_url ?? "");
         setPortfolioUrl(user.profile.portfolio_url ?? "");
       } else if (isCompanyProfile(user)) {
@@ -68,6 +98,11 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
         setDepartment(user.profile.department ?? "");
         setDescription(user.profile.description ?? "");
         setWebsiteUrl(user.profile.website_url ?? "");
+        setIndustry(user.profile.industry ?? "");
+        setNumberOfEmployees(user.profile.number_of_employees ?? "");
+        setSalary(user.profile.salary ?? "");
+        setLocation(user.profile.location ?? "");
+        setRecruitingJobType(user.profile.recruiting_job_type ?? "");
       }
       setErrors([]);
       if (!dialog.open) dialog.showModal();
@@ -87,7 +122,15 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
           name,
           university,
           grade,
+          faculty: optional(faculty),
+          desired_job_type: optional(desiredJobType),
+          desired_location: desiredLocation.length > 0 ? desiredLocation : null,
           self_pr: optional(selfPr),
+          gakuchika: optional(gakuchika),
+          skills: optional(skills),
+          qualifications: optional(qualifications),
+          intern_experience: optional(internExperience),
+          job_hunting_status: optional(jobHuntingStatus),
           github_url: optional(githubUrl),
           portfolio_url: optional(portfolioUrl),
         });
@@ -97,6 +140,11 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
           department: optional(department),
           description: optional(description),
           website_url: optional(websiteUrl),
+          industry: optional(industry),
+          number_of_employees: optional(numberOfEmployees),
+          salary: optional(salary),
+          location: optional(location),
+          recruiting_job_type: optional(recruitingJobType),
         });
       }
       await onSaved();
@@ -121,7 +169,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-lg backdrop:bg-black/40"
+      className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-lg backdrop:bg-black/40"
     >
       <h2 className="text-lg font-semibold text-zinc-900">プロフィールを編集</h2>
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
@@ -164,6 +212,31 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               </select>
             </label>
             <label className="block">
+              <span className="text-sm font-medium text-zinc-700">学部</span>
+              <input
+                type="text"
+                value={faculty}
+                onChange={(event) => setFaculty(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">希望職種</span>
+              <input
+                type="text"
+                value={desiredJobType}
+                onChange={(event) => setDesiredJobType(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <div>
+              <span className="text-sm font-medium text-zinc-700">希望勤務地</span>
+              <PrefectureSelector
+                selected={desiredLocation}
+                onChange={setDesiredLocation}
+              />
+            </div>
+            <label className="block">
               <span className="text-sm font-medium text-zinc-700">自己PR</span>
               <textarea
                 rows={3}
@@ -171,6 +244,57 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
                 onChange={(event) => setSelfPr(event.target.value)}
                 className={inputClass}
               />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">ガクチカ</span>
+              <textarea
+                rows={3}
+                value={gakuchika}
+                onChange={(event) => setGakuchika(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">スキル</span>
+              <textarea
+                rows={3}
+                value={skills}
+                onChange={(event) => setSkills(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">資格</span>
+              <textarea
+                rows={3}
+                value={qualifications}
+                onChange={(event) => setQualifications(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">インターン経験</span>
+              <textarea
+                rows={3}
+                value={internExperience}
+                onChange={(event) => setInternExperience(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">就活状況</span>
+              <select
+                value={jobHuntingStatus}
+                onChange={(event) => setJobHuntingStatus(event.target.value)}
+                className={inputClass}
+              >
+                <option value="">未入力</option>
+                {JOB_HUNTING_STATUS_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="block">
               <span className="text-sm font-medium text-zinc-700">GitHub URL</span>
@@ -209,6 +333,51 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
                 type="text"
                 value={department}
                 onChange={(event) => setDepartment(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">業界</span>
+              <input
+                type="text"
+                value={industry}
+                onChange={(event) => setIndustry(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">従業員数</span>
+              <input
+                type="text"
+                value={numberOfEmployees}
+                onChange={(event) => setNumberOfEmployees(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">給与</span>
+              <input
+                type="text"
+                value={salary}
+                onChange={(event) => setSalary(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">勤務地</span>
+              <input
+                type="text"
+                value={location}
+                onChange={(event) => setLocation(event.target.value)}
+                className={inputClass}
+              />
+            </label>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">採用職種</span>
+              <input
+                type="text"
+                value={recruitingJobType}
+                onChange={(event) => setRecruitingJobType(event.target.value)}
                 className={inputClass}
               />
             </label>

@@ -67,9 +67,16 @@ module Api
 
       def profile_payload(user)
         if user.student?
-          user.student_profile&.slice(:name, :university, :grade, :self_pr, :github_url, :portfolio_url)
+          user.student_profile&.slice(
+            :name, :university, :grade, :self_pr, :github_url, :portfolio_url,
+            :faculty, :desired_job_type, :desired_location, :gakuchika,
+            :skills, :qualifications, :intern_experience, :job_hunting_status
+          )
         else
-          user.company_profile&.slice(:name, :department, :description, :website_url)
+          user.company_profile&.slice(
+            :name, :department, :description, :website_url,
+            :industry, :number_of_employees, :salary, :location, :recruiting_job_type
+          )
         end
       end
     end

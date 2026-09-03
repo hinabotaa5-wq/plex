@@ -6,7 +6,11 @@ import { CompanyStudents } from "@/components/dashboard/CompanyStudents";
 import { EditProfileModal } from "@/components/dashboard/EditProfileModal";
 import { StudentScoutInbox } from "@/components/dashboard/StudentScoutInbox";
 import { useAuth } from "@/components/AuthProvider";
-import { isCompanyProfile, isStudentProfile } from "@/lib/types";
+import {
+  isCompanyProfile,
+  isStudentProfile,
+  parseDesiredLocations,
+} from "@/lib/types";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -29,6 +33,9 @@ export default function DashboardPage() {
   }
 
   const displayName = user.profile?.name ?? user.email;
+  const desiredLocations = isStudentProfile(user)
+    ? parseDesiredLocations(user.profile.desired_location)
+    : [];
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-16">
@@ -58,10 +65,75 @@ export default function DashboardPage() {
                 <dt className="text-zinc-500">学年</dt>
                 <dd className="mt-1 font-medium text-zinc-900">{user.profile.grade}</dd>
               </div>
+              {user.profile.faculty && (
+                <div>
+                  <dt className="text-zinc-500">学部</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.faculty}</dd>
+                </div>
+              )}
+              {user.profile.desired_job_type && (
+                <div>
+                  <dt className="text-zinc-500">希望職種</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.desired_job_type}
+                  </dd>
+                </div>
+              )}
+              {desiredLocations.length > 0 && (
+                <div>
+                  <dt className="text-zinc-500">希望勤務地</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1.5">
+                    {desiredLocations.map((location) => (
+                      <span
+                        key={location}
+                        className="inline-flex rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800"
+                      >
+                        {location}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              )}
               {user.profile.self_pr && (
                 <div>
                   <dt className="text-zinc-500">自己PR</dt>
                   <dd className="mt-1 font-medium text-zinc-900">{user.profile.self_pr}</dd>
+                </div>
+              )}
+              {user.profile.gakuchika && (
+                <div>
+                  <dt className="text-zinc-500">ガクチカ</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.gakuchika}</dd>
+                </div>
+              )}
+              {user.profile.skills && (
+                <div>
+                  <dt className="text-zinc-500">スキル</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.skills}</dd>
+                </div>
+              )}
+              {user.profile.qualifications && (
+                <div>
+                  <dt className="text-zinc-500">資格</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.qualifications}
+                  </dd>
+                </div>
+              )}
+              {user.profile.intern_experience && (
+                <div>
+                  <dt className="text-zinc-500">インターン経験</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.intern_experience}
+                  </dd>
+                </div>
+              )}
+              {user.profile.job_hunting_status && (
+                <div>
+                  <dt className="text-zinc-500">就活状況</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.job_hunting_status}
+                  </dd>
                 </div>
               )}
               {user.profile.github_url && (
@@ -91,6 +163,40 @@ export default function DashboardPage() {
                 <div>
                   <dt className="text-zinc-500">部署名</dt>
                   <dd className="mt-1 font-medium text-zinc-900">{user.profile.department}</dd>
+                </div>
+              )}
+              {user.profile.industry && (
+                <div>
+                  <dt className="text-zinc-500">業界</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.industry}</dd>
+                </div>
+              )}
+              {user.profile.number_of_employees && (
+                <div>
+                  <dt className="text-zinc-500">従業員数</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.number_of_employees}
+                  </dd>
+                </div>
+              )}
+              {user.profile.salary && (
+                <div>
+                  <dt className="text-zinc-500">給与</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.salary}</dd>
+                </div>
+              )}
+              {user.profile.location && (
+                <div>
+                  <dt className="text-zinc-500">勤務地</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.location}</dd>
+                </div>
+              )}
+              {user.profile.recruiting_job_type && (
+                <div>
+                  <dt className="text-zinc-500">採用職種</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.recruiting_job_type}
+                  </dd>
                 </div>
               )}
               {user.profile.description && (

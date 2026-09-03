@@ -42,18 +42,50 @@ module Api
       end
 
       def profile_params
-        raw =
-          if current_user.student?
-            params.require(:profile).permit(
-              :name, :university, :grade, :self_pr, :github_url, :portfolio_url
-            )
+        if current_user.student?
+          permitted = params.require(:profile).permit(
+            :name, :university, :grade, :self_pr, :github_url, :portfolio_url,
+            :faculty, :desired_job_type, :gakuchika,
+            :skills, :qualifications, :intern_experience, :job_hunting_status,
+            desired_location: []
+          )
+          attrs = normalize_blank_urls(permitted)
+          if params[:profile].key?(:desired_location)
+            attrs["desired_location"] = serialize_desired_location(params[:profile][:desired_location])
+          end
+          attrs
+        else
+          raw = params.require(:profile).permit(
+            :name, :department, :description, :website_url,
+            :industry, :number_of_employees, :salary, :location, :recruiting_job_type
+          )
+          normalize_blank_urls(raw)
+        end
+      end
+
+      def serialize_desired_location(value)
+        items =
+          case value
+          when nil
+            []
+          when Array
+            value
+          when String
+            stripped = value.strip
+            parse_json_array(stripped) || (stripped.empty? ? [] : [ stripped ])
           else
-            params.require(:profile).permit(
-              :name, :department, :description, :website_url
-            )
+            Array.wrap(value)
           end
 
-        normalize_blank_urls(raw)
+        locations = items.map { |item| item.to_s.strip }.reject(&:blank?).uniq
+        locations.empty? ? nil : locations.to_json
+      end
+
+      def parse_json_array(value)
+        parsed = JSON.parse(value)
+        parsed if parsed.is_a?(Array)
+      rescue JSON::ParserError
+        nil
       end
 
       def normalize_blank_urls(attrs)
@@ -76,9 +108,16 @@ module Api
 
       def profile_payload
         if current_user.student?
-          current_profile.slice(:name, :university, :grade, :self_pr, :github_url, :portfolio_url)
+          current_profile.slice(
+            :name, :university, :grade, :self_pr, :github_url, :portfolio_url,
+            :faculty, :desired_job_type, :desired_location, :gakuchika,
+            :skills, :qualifications, :intern_experience, :job_hunting_status
+          )
         else
-          current_profile.slice(:name, :department, :description, :website_url)
+          current_profile.slice(
+            :name, :department, :description, :website_url,
+            :industry, :number_of_employees, :salary, :location, :recruiting_job_type
+          )
         end
       end
     end

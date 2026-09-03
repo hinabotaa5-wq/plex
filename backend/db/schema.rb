@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_03_094544) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_03_113500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,7 +18,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_094544) do
     t.datetime "created_at", null: false
     t.string "department"
     t.text "description"
+    t.string "industry"
+    t.string "location"
     t.string "name", null: false
+    t.string "number_of_employees"
+    t.string "recruiting_job_type"
+    t.string "salary"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "website_url"
@@ -50,11 +55,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_094544) do
 
   create_table "student_profiles", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "desired_job_type"
+    t.string "desired_location"
+    t.string "faculty"
+    t.text "gakuchika"
     t.string "github_url"
     t.string "grade", null: false
+    t.text "intern_experience"
+    t.string "job_hunting_status"
     t.string "name", null: false
     t.string "portfolio_url"
+    t.text "qualifications"
     t.text "self_pr"
+    t.text "skills"
     t.string "university", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false

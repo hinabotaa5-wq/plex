@@ -7,6 +7,14 @@ export type StudentProfile = {
   self_pr: string | null;
   github_url: string | null;
   portfolio_url: string | null;
+  faculty: string | null;
+  desired_job_type: string | null;
+  desired_location: string[] | string | null;
+  gakuchika: string | null;
+  skills: string | null;
+  qualifications: string | null;
+  intern_experience: string | null;
+  job_hunting_status: string | null;
 };
 
 export type CompanyProfile = {
@@ -14,6 +22,11 @@ export type CompanyProfile = {
   department: string | null;
   description: string | null;
   website_url: string | null;
+  industry: string | null;
+  number_of_employees: string | null;
+  salary: string | null;
+  location: string | null;
+  recruiting_job_type: string | null;
 };
 
 export type User = {
@@ -111,6 +124,14 @@ export type UpdateStudentProfilePayload = {
   self_pr?: string | null;
   github_url?: string | null;
   portfolio_url?: string | null;
+  faculty?: string | null;
+  desired_job_type?: string | null;
+  desired_location?: string[] | string | null;
+  gakuchika?: string | null;
+  skills?: string | null;
+  qualifications?: string | null;
+  intern_experience?: string | null;
+  job_hunting_status?: string | null;
 };
 
 export type UpdateCompanyProfilePayload = {
@@ -118,6 +139,11 @@ export type UpdateCompanyProfilePayload = {
   department?: string | null;
   description?: string | null;
   website_url?: string | null;
+  industry?: string | null;
+  number_of_employees?: string | null;
+  salary?: string | null;
+  location?: string | null;
+  recruiting_job_type?: string | null;
 };
 
 export type UpdateProfilePayload =
@@ -152,6 +178,31 @@ export type SignupPayload =
         website_url?: string | null;
       };
     };
+
+export function parseDesiredLocations(
+  value: string[] | string | null | undefined
+): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item) => typeof item === "string" && item.trim() !== "");
+  }
+  if (value == null) return [];
+
+  const trimmed = value.trim();
+  if (trimmed === "") return [];
+
+  try {
+    const parsed: unknown = JSON.parse(trimmed);
+    if (Array.isArray(parsed)) {
+      return parsed.filter(
+        (item): item is string => typeof item === "string" && item.trim() !== ""
+      );
+    }
+  } catch {
+    // 旧データの単一テキストはそのまま配列化する
+  }
+
+  return [trimmed];
+}
 
 export function isStudentProfile(
   user: User
