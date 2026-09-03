@@ -90,7 +90,18 @@ module Api
           subject: scout.subject,
           body: scout.body,
           created_at: scout.created_at,
-          company: scout.company_profile.slice(:id, :name, :description, :website_url)
+          company: scout.company_profile.slice(
+            :id,
+            :name,
+            :department,
+            :description,
+            :website_url,
+            :industry,
+            :number_of_employees,
+            :salary,
+            :location,
+            :recruiting_job_type
+          )
         }
       end
 

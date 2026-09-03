@@ -85,27 +85,78 @@ export function ScoutDetailModal({
           </div>
         </div>
 
-        <div className="space-y-4 overflow-y-auto px-6 py-4 text-sm">
-          <p className="leading-6 text-zinc-700">{scout?.body}</p>
-          {scout?.company.description && (
-            <div>
-              <p className="text-zinc-500">企業概要</p>
-              <p className="mt-1 font-medium text-zinc-900">{scout.company.description}</p>
-            </div>
-          )}
-          {scout?.company.website_url && (
-            <div>
-              <p className="text-zinc-500">Webサイト</p>
-              <a
-                href={scout.company.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 inline-block font-medium text-zinc-900 underline"
-              >
-                {scout.company.website_url}
-              </a>
-            </div>
-          )}
+        <div className="space-y-6 overflow-y-auto px-6 py-4 text-sm">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">メッセージ</h3>
+            <p className="mt-2 whitespace-pre-wrap leading-6 text-zinc-700">{scout?.body}</p>
+          </div>
+
+          <div className="border-t border-zinc-200 pt-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">企業情報</h3>
+            <dl className="space-y-3">
+              <div>
+                <dt className="text-zinc-500">企業名</dt>
+                <dd className="mt-1 font-medium text-zinc-900">{scout?.company.name}</dd>
+              </div>
+              {scout?.company.department && (
+                <div>
+                  <dt className="text-zinc-500">部署名</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{scout.company.department}</dd>
+                </div>
+              )}
+              {scout?.company.industry && (
+                <div>
+                  <dt className="text-zinc-500">業界</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{scout.company.industry}</dd>
+                </div>
+              )}
+              {scout?.company.location && (
+                <div>
+                  <dt className="text-zinc-500">勤務地</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{scout.company.location}</dd>
+                </div>
+              )}
+              {scout?.company.recruiting_job_type && (
+                <div>
+                  <dt className="text-zinc-500">採用職種</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{scout.company.recruiting_job_type}</dd>
+                </div>
+              )}
+              {scout?.company.salary && (
+                <div>
+                  <dt className="text-zinc-500">給与</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{scout.company.salary}</dd>
+                </div>
+              )}
+              {scout?.company.number_of_employees && (
+                <div>
+                  <dt className="text-zinc-500">従業員数</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{scout.company.number_of_employees}</dd>
+                </div>
+              )}
+              {scout?.company.description && (
+                <div>
+                  <dt className="text-zinc-500">企業概要</dt>
+                  <dd className="mt-1 font-medium text-zinc-900 whitespace-pre-wrap">{scout.company.description}</dd>
+                </div>
+              )}
+              {scout?.company.website_url && (
+                <div>
+                  <dt className="text-zinc-500">Webサイト</dt>
+                  <dd className="mt-1">
+                    <a
+                      href={scout.company.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-zinc-900 underline break-all"
+                    >
+                      {scout.company.website_url}
+                    </a>
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
         </div>
 
         <div className="flex flex-wrap justify-end gap-2 border-t border-zinc-200 px-6 py-4">

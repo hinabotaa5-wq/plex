@@ -74,8 +74,14 @@ export type ReceivedScout = {
   company: {
     id: number;
     name: string;
-    description: string | null;
-    website_url: string | null;
+    department?: string | null;
+    description?: string | null;
+    website_url?: string | null;
+    industry?: string | null;
+    number_of_employees?: string | null;
+    salary?: string | null;
+    location?: string | null;
+    recruiting_job_type?: string | null;
   };
 };
 
