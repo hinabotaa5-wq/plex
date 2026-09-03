@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company_profile: one
+  student_profile: one
+  subject: インターンのご案内
+  body: 弊社のインターンに興味を持っていただけないでしょうか。
+  status: 0
+
+two:
+  company_profile: two
+  student_profile: two
+  subject: カジュアル面談のご案内
+  body: 一度お話できればと思います。
+  status: 0

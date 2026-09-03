@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: company_one
+  name: ダミー社
+  description: ソフトウェア開発を行う会社です。
+  website_url: https://example.com
+
+two:
+  user: company_two
+  name: サンプル株式会社
+  description: インターン生と企業をマッチングするサービスを運営しています。
+  website_url: https://example.org
