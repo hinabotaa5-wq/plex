@@ -22,6 +22,8 @@ const EMPTY_FILTERS: StudentSearchParams = {
   q: "",
   grade: "",
   has_github: false,
+  has_qualifications: false,
+  has_intern_experience: false,
 };
 
 export function CompanyStudents() {
@@ -99,6 +101,18 @@ export function CompanyStudents() {
     void fetchStudents(next);
   }
 
+  function handleHasQualificationsChange(hasQualifications: boolean) {
+    const next = { ...draftFilters, has_qualifications: hasQualifications };
+    setDraftFilters(next);
+    void fetchStudents(next);
+  }
+
+  function handleHasInternExperienceChange(hasInternExperience: boolean) {
+    const next = { ...draftFilters, has_intern_experience: hasInternExperience };
+    setDraftFilters(next);
+    void fetchStudents(next);
+  }
+
   function handleClear() {
     setDraftFilters(EMPTY_FILTERS);
     void fetchStudents(EMPTY_FILTERS);
@@ -106,7 +120,11 @@ export function CompanyStudents() {
 
   const sentIds = new Set(sentScouts.map((scout) => scout.student.id));
   const hasActiveFilters = Boolean(
-    appliedFilters.q?.trim() || appliedFilters.grade || appliedFilters.has_github
+    appliedFilters.q?.trim() ||
+      appliedFilters.grade ||
+      appliedFilters.has_github ||
+      appliedFilters.has_qualifications ||
+      appliedFilters.has_intern_experience
   );
 
   function handleSent(_studentId: number, scout?: SentScout) {
@@ -174,6 +192,26 @@ export function CompanyStudents() {
                 className="size-4 rounded border-zinc-300"
               />
               <span className="font-medium">GitHubありのみ</span>
+            </label>
+
+            <label className="flex items-end gap-2 pb-2 text-sm text-zinc-700">
+              <input
+                type="checkbox"
+                checked={Boolean(draftFilters.has_qualifications)}
+                onChange={(event) => handleHasQualificationsChange(event.target.checked)}
+                className="size-4 rounded border-zinc-300"
+              />
+              <span className="font-medium">資格ありのみ</span>
+            </label>
+
+            <label className="flex items-end gap-2 pb-2 text-sm text-zinc-700">
+              <input
+                type="checkbox"
+                checked={Boolean(draftFilters.has_intern_experience)}
+                onChange={(event) => handleHasInternExperienceChange(event.target.checked)}
+                className="size-4 rounded border-zinc-300"
+              />
+              <span className="font-medium">インターン経験ありのみ</span>
             </label>
           </div>
 

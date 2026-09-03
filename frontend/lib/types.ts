@@ -93,6 +93,8 @@ export type StudentSearchParams = {
   q?: string;
   grade?: string;
   has_github?: boolean;
+  has_qualifications?: boolean;
+  has_intern_experience?: boolean;
 };
 
 export type ScoutsResponse = {

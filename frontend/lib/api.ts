@@ -98,6 +98,8 @@ export function getStudents(params: StudentSearchParams = {}) {
   if (params.q?.trim()) query.set("q", params.q.trim());
   if (params.grade) query.set("grade", params.grade);
   if (params.has_github) query.set("has_github", "true");
+  if (params.has_qualifications) query.set("has_qualifications", "true");
+  if (params.has_intern_experience) query.set("has_intern_experience", "true");
   const qs = query.toString();
   return request<StudentsResponse>(`/api/v1/students${qs ? `?${qs}` : ""}`);
 }

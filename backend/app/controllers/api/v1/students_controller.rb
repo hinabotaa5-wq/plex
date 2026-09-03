@@ -16,6 +16,8 @@ module Api
         students = filter_by_q(students) if params[:q].present?
         students = students.where(grade: params[:grade]) if params[:grade].present?
         students = filter_by_has_github(students) if params[:has_github].to_s == "true"
+        students = filter_by_has_qualifications(students) if params[:has_qualifications].to_s == "true"
+        students = filter_by_has_intern_experience(students) if params[:has_intern_experience].to_s == "true"
         students
       end
 
@@ -29,6 +31,14 @@ module Api
 
       def filter_by_has_github(students)
         students.where.not(github_url: [nil, ""])
+      end
+
+      def filter_by_has_qualifications(students)
+        students.where.not(qualifications: [nil, ""])
+      end
+
+      def filter_by_has_intern_experience(students)
+        students.where.not(intern_experience: [nil, ""])
       end
 
       def student_payload(student)
