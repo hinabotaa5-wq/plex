@@ -15,6 +15,16 @@ function optional(value: string): string | undefined {
 const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 outline-none focus:border-zinc-900";
 
+const GRADE_OPTIONS = [
+  "大学1年",
+  "大学2年",
+  "大学3年",
+  "大学4年",
+  "修士1年",
+  "修士2年",
+  "その他",
+] as const;
+
 export default function SignupPage() {
   const router = useRouter();
   const { user, loading, signup } = useAuth();
@@ -180,13 +190,19 @@ export default function SignupPage() {
               </label>
               <label className="block">
                 <span className="text-sm font-medium text-zinc-700">学年</span>
-                <input
-                  type="text"
+                <select
                   required
                   value={grade}
                   onChange={(event) => setGrade(event.target.value)}
                   className={inputClass}
-                />
+                >
+                  <option value="">選択してください</option>
+                  {GRADE_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label className="block">
                 <span className="text-sm font-medium text-zinc-700">自己PR</span>

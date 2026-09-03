@@ -15,6 +15,7 @@ const GRADE_OPTIONS = [
   "大学4年",
   "修士1年",
   "修士2年",
+  "その他",
 ] as const;
 
 const EMPTY_FILTERS: StudentSearchParams = {
