@@ -4,6 +4,7 @@ import type {
   ChatMessage,
   CreateScoutPayload,
   MeResponse,
+  ProfileResponse,
   ReceivedScout,
   ScoutsResponse,
   ScoutStatus,
@@ -12,6 +13,7 @@ import type {
   SignupPayload,
   StudentSearchParams,
   StudentsResponse,
+  UpdateProfilePayload,
 } from "@/lib/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
@@ -77,6 +79,17 @@ export function signupRequest(payload: SignupPayload) {
   return request<AuthResponse>("/api/v1/signup", {
     method: "POST",
     body: JSON.stringify({ user: payload }),
+  });
+}
+
+export function getProfile() {
+  return request<ProfileResponse>("/api/v1/profile");
+}
+
+export function updateProfile(payload: UpdateProfilePayload) {
+  return request<ProfileResponse>("/api/v1/profile", {
+    method: "PATCH",
+    body: JSON.stringify({ profile: payload }),
   });
 }
 

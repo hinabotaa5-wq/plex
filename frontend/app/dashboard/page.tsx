@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CompanyStudents } from "@/components/dashboard/CompanyStudents";
+import { EditProfileModal } from "@/components/dashboard/EditProfileModal";
 import { StudentScoutInbox } from "@/components/dashboard/StudentScoutInbox";
 import { useAuth } from "@/components/AuthProvider";
 import { isCompanyProfile, isStudentProfile } from "@/lib/types";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, refreshMe } = useAuth();
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -56,6 +58,27 @@ export default function DashboardPage() {
                 <dt className="text-zinc-500">学年</dt>
                 <dd className="mt-1 font-medium text-zinc-900">{user.profile.grade}</dd>
               </div>
+              {user.profile.self_pr && (
+                <div>
+                  <dt className="text-zinc-500">自己PR</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.self_pr}</dd>
+                </div>
+              )}
+              {user.profile.github_url && (
+                <div>
+                  <dt className="text-zinc-500">GitHub</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    <a
+                      href={user.profile.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline"
+                    >
+                      {user.profile.github_url}
+                    </a>
+                  </dd>
+                </div>
+              )}
             </>
           )}
           {isCompanyProfile(user) && (
@@ -64,6 +87,12 @@ export default function DashboardPage() {
                 <dt className="text-zinc-500">企業名</dt>
                 <dd className="mt-1 font-medium text-zinc-900">{user.profile.name}</dd>
               </div>
+              {user.profile.department && (
+                <div>
+                  <dt className="text-zinc-500">部署名</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{user.profile.department}</dd>
+                </div>
+              )}
               {user.profile.description && (
                 <div>
                   <dt className="text-zinc-500">企業概要</dt>
@@ -72,21 +101,52 @@ export default function DashboardPage() {
                   </dd>
                 </div>
               )}
+              {user.profile.website_url && (
+                <div>
+                  <dt className="text-zinc-500">Webサイト</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    <a
+                      href={user.profile.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline"
+                    >
+                      {user.profile.website_url}
+                    </a>
+                  </dd>
+                </div>
+              )}
             </>
           )}
         </dl>
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="mt-8 rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
-        >
-          ログアウト
-        </button>
+        <div className="mt-8 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setEditOpen(true)}
+            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+          >
+            プロフィールを編集
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          >
+            ログアウト
+          </button>
+        </div>
       </div>
 
       {user.role === "company" && <CompanyStudents />}
       {user.role === "student" && <StudentScoutInbox />}
+
+      <EditProfileModal
+        user={user}
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        onSaved={refreshMe}
+      />
     </main>
   );
 }

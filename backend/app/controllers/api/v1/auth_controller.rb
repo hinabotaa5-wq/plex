@@ -69,7 +69,7 @@ module Api
         if user.student?
           user.student_profile&.slice(:name, :university, :grade, :self_pr, :github_url, :portfolio_url)
         else
-          user.company_profile&.slice(:name, :description, :website_url)
+          user.company_profile&.slice(:name, :department, :description, :website_url)
         end
       end
     end

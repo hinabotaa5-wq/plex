@@ -11,6 +11,7 @@ export type StudentProfile = {
 
 export type CompanyProfile = {
   name: string;
+  department: string | null;
   description: string | null;
   website_url: string | null;
 };
@@ -101,6 +102,30 @@ export type CreateScoutPayload = {
   student_profile_id: number;
   subject: string;
   body: string;
+};
+
+export type UpdateStudentProfilePayload = {
+  name: string;
+  university: string;
+  grade: string;
+  self_pr?: string | null;
+  github_url?: string | null;
+  portfolio_url?: string | null;
+};
+
+export type UpdateCompanyProfilePayload = {
+  name: string;
+  department?: string | null;
+  description?: string | null;
+  website_url?: string | null;
+};
+
+export type UpdateProfilePayload =
+  | UpdateStudentProfilePayload
+  | UpdateCompanyProfilePayload;
+
+export type ProfileResponse = {
+  profile: StudentProfile | CompanyProfile;
 };
 
 export type SignupPayload =
