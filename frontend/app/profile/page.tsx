@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { EditProfileModal } from "@/components/dashboard/EditProfileModal";
 import { useAuth } from "@/components/AuthProvider";
@@ -227,6 +228,12 @@ export default function ProfilePage() {
           >
             プロフィールを編集
           </button>
+          <Link
+            href="/dashboard"
+            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          >
+            戻る
+          </Link>
         </div>
       </div>
 
