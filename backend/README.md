@@ -1,24 +1,25 @@
-# README
+# Backend（Rails API）
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+インターンマッチの API です。Ruby on Rails 8.1（API モード）で、PostgreSQL を使います。
 
-Things you may want to cover:
+セットアップ、シードアカウント、確認手順、テスト手順はリポジトリ直下の [README.md](../README.md) を見てください。
 
-* Ruby version
+## このディレクトリでよく使うコマンド
 
-* System dependencies
+```bash
+bundle install
+bin/setup                 # 依存関係のインストールと DB 準備（その後サーバー起動）
+bin/setup --skip-server   # サーバーは起動しない
+bin/rails db:prepare
+bin/rails db:seed
+bin/rails server          # http://localhost:3000
+bin/rails test
+bin/ci
+```
 
-* Configuration
+## 補足
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- Ruby バージョンは `.ruby-version`（3.4.10）です。
+- 開発 DB は `plex_development`、テスト DB は `plex_test` です（`config/database.yml`）。
+- ヘルスチェックは `GET /up` です。
+- API の名前空間は `/api/v1` です。認証は JWT（`Authorization: Bearer <token>`）です。
