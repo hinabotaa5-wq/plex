@@ -36,7 +36,6 @@ export default function SignupPage() {
   const [grade, setGrade] = useState("");
   const [selfPr, setSelfPr] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
-  const [portfolioUrl, setPortfolioUrl] = useState("");
   const [description, setDescription] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -56,7 +55,6 @@ export default function SignupPage() {
     setGrade("");
     setSelfPr("");
     setGithubUrl("");
-    setPortfolioUrl("");
     setDescription("");
     setWebsiteUrl("");
   }
@@ -78,7 +76,6 @@ export default function SignupPage() {
               grade,
               self_pr: optional(selfPr),
               github_url: optional(githubUrl),
-              portfolio_url: optional(portfolioUrl),
             },
           }
         : {
@@ -221,20 +218,11 @@ export default function SignupPage() {
                 />
               </label>
               <label className="block">
-                <span className="text-sm font-medium text-zinc-700">GitHub URL</span>
+                <span className="text-sm font-medium text-zinc-700">GitHub URL・ポートフォリオ URL</span>
                 <input
                   type="url"
                   value={githubUrl}
                   onChange={(event) => setGithubUrl(event.target.value)}
-                  className={inputClass}
-                />
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium text-zinc-700">ポートフォリオ URL</span>
-                <input
-                  type="url"
-                  value={portfolioUrl}
-                  onChange={(event) => setPortfolioUrl(event.target.value)}
                   className={inputClass}
                 />
               </label>

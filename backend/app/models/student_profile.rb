@@ -8,7 +8,6 @@ class StudentProfile < ApplicationRecord
   validates :university, presence: true
   validates :grade, presence: true
   validates :github_url, format: { with: URL_FORMAT }, allow_blank: true
-  validates :portfolio_url, format: { with: URL_FORMAT }, allow_blank: true
   validate :user_must_be_student
 
   private

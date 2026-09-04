@@ -44,9 +44,9 @@ module Api
       def profile_params
         if current_user.student?
           permitted = params.require(:profile).permit(
-            :name, :university, :grade, :self_pr, :github_url, :portfolio_url,
+            :name, :university, :grade, :self_pr, :github_url,
             :faculty, :desired_job_type, :gakuchika,
-            :skills, :qualifications, :intern_experience, :job_hunting_status,
+            :skills, :qualifications, :intern_experience,
             desired_location: []
           )
           attrs = normalize_blank_urls(permitted)
@@ -91,7 +91,7 @@ module Api
       def normalize_blank_urls(attrs)
         url_keys =
           if current_user.student?
-            %w[github_url portfolio_url]
+            %w[github_url]
           else
             %w[website_url]
           end
@@ -109,9 +109,9 @@ module Api
       def profile_payload
         if current_user.student?
           current_profile.slice(
-            :name, :university, :grade, :self_pr, :github_url, :portfolio_url,
+            :name, :university, :grade, :self_pr, :github_url,
             :faculty, :desired_job_type, :desired_location, :gakuchika,
-            :skills, :qualifications, :intern_experience, :job_hunting_status
+            :skills, :qualifications, :intern_experience
           )
         else
           current_profile.slice(

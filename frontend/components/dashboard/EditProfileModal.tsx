@@ -22,13 +22,6 @@ const GRADE_OPTIONS = [
   "その他",
 ] as const;
 
-const JOB_HUNTING_STATUS_OPTIONS = [
-  "準備中",
-  "活動中",
-  "内定あり",
-  "就活終了",
-] as const;
-
 const inputClass =
   "mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900";
 
@@ -57,11 +50,13 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
   const [selfPr, setSelfPr] = useState("");
   const [gakuchika, setGakuchika] = useState("");
   const [skills, setSkills] = useState("");
+  const [hasSkills, setHasSkills] = useState(false);
   const [qualifications, setQualifications] = useState("");
+  const [hasQualifications, setHasQualifications] = useState(false);
   const [internExperience, setInternExperience] = useState("");
-  const [jobHuntingStatus, setJobHuntingStatus] = useState("");
+  const [hasInternExperience, setHasInternExperience] = useState(false);
   const [githubUrl, setGithubUrl] = useState("");
-  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [hasGithub, setHasGithub] = useState(false);
   const [department, setDepartment] = useState("");
   const [description, setDescription] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
@@ -88,11 +83,13 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
         setSelfPr(user.profile.self_pr ?? "");
         setGakuchika(user.profile.gakuchika ?? "");
         setSkills(user.profile.skills ?? "");
+        setHasSkills(Boolean(user.profile.skills));
         setQualifications(user.profile.qualifications ?? "");
+        setHasQualifications(Boolean(user.profile.qualifications));
         setInternExperience(user.profile.intern_experience ?? "");
-        setJobHuntingStatus(user.profile.job_hunting_status ?? "");
+        setHasInternExperience(Boolean(user.profile.intern_experience));
         setGithubUrl(user.profile.github_url ?? "");
-        setPortfolioUrl(user.profile.portfolio_url ?? "");
+        setHasGithub(Boolean(user.profile.github_url));
       } else if (isCompanyProfile(user)) {
         setName(user.profile.name);
         setDepartment(user.profile.department ?? "");
@@ -127,12 +124,10 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
           desired_location: desiredLocation.length > 0 ? desiredLocation : null,
           self_pr: optional(selfPr),
           gakuchika: optional(gakuchika),
-          skills: optional(skills),
-          qualifications: optional(qualifications),
-          intern_experience: optional(internExperience),
-          job_hunting_status: optional(jobHuntingStatus),
-          github_url: optional(githubUrl),
-          portfolio_url: optional(portfolioUrl),
+          skills: hasSkills ? optional(skills) : null,
+          qualifications: hasQualifications ? optional(qualifications) : null,
+          intern_experience: hasInternExperience ? optional(internExperience) : null,
+          github_url: hasGithub ? optional(githubUrl) : null,
         });
       } else {
         await updateProfile({
@@ -254,66 +249,98 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
                 className={inputClass}
               />
             </label>
-            <label className="block">
-              <span className="text-sm font-medium text-zinc-700">スキル</span>
-              <textarea
-                rows={3}
-                value={skills}
-                onChange={(event) => setSkills(event.target.value)}
-                className={inputClass}
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium text-zinc-700">資格</span>
-              <textarea
-                rows={3}
-                value={qualifications}
-                onChange={(event) => setQualifications(event.target.value)}
-                className={inputClass}
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium text-zinc-700">インターン経験</span>
-              <textarea
-                rows={3}
-                value={internExperience}
-                onChange={(event) => setInternExperience(event.target.value)}
-                className={inputClass}
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium text-zinc-700">就活状況</span>
-              <select
-                value={jobHuntingStatus}
-                onChange={(event) => setJobHuntingStatus(event.target.value)}
-                className={inputClass}
-              >
-                <option value="">未入力</option>
-                {JOB_HUNTING_STATUS_OPTIONS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium text-zinc-700">GitHub URL</span>
-              <input
-                type="url"
-                value={githubUrl}
-                onChange={(event) => setGithubUrl(event.target.value)}
-                className={inputClass}
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium text-zinc-700">ポートフォリオ URL</span>
-              <input
-                type="url"
-                value={portfolioUrl}
-                onChange={(event) => setPortfolioUrl(event.target.value)}
-                className={inputClass}
-              />
-            </label>
+            <div>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={hasSkills}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setHasSkills(checked);
+                    if (!checked) setSkills("");
+                  }}
+                  className="size-4 rounded border-zinc-300"
+                />
+                <span className="text-sm font-medium text-zinc-700">ITスキル</span>
+              </label>
+              {hasSkills && (
+                <textarea
+                  rows={3}
+                  value={skills}
+                  onChange={(event) => setSkills(event.target.value)}
+                  className={inputClass}
+                />
+              )}
+            </div>
+            <div>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={hasQualifications}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setHasQualifications(checked);
+                    if (!checked) setQualifications("");
+                  }}
+                  className="size-4 rounded border-zinc-300"
+                />
+                <span className="text-sm font-medium text-zinc-700">資格</span>
+              </label>
+              {hasQualifications && (
+                <textarea
+                  rows={3}
+                  value={qualifications}
+                  onChange={(event) => setQualifications(event.target.value)}
+                  className={inputClass}
+                />
+              )}
+            </div>
+            <div>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={hasInternExperience}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setHasInternExperience(checked);
+                    if (!checked) setInternExperience("");
+                  }}
+                  className="size-4 rounded border-zinc-300"
+                />
+                <span className="text-sm font-medium text-zinc-700">インターン経験</span>
+              </label>
+              {hasInternExperience && (
+                <textarea
+                  rows={3}
+                  value={internExperience}
+                  onChange={(event) => setInternExperience(event.target.value)}
+                  className={inputClass}
+                />
+              )}
+            </div>
+            <div>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={hasGithub}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setHasGithub(checked);
+                    if (!checked) setGithubUrl("");
+                  }}
+                  className="size-4 rounded border-zinc-300"
+                />
+                <span className="text-sm font-medium text-zinc-700">GitHub URL・ポートフォリオ URL</span>
+              </label>
+              {hasGithub && (
+                <input
+                  type="url"
+                  value={githubUrl}
+                  onChange={(event) => setGithubUrl(event.target.value)}
+                  className={inputClass}
+                />
+              )}
+            </div>
           </>
         ) : (
           <>

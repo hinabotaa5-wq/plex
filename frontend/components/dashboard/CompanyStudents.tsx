@@ -24,6 +24,7 @@ const EMPTY_FILTERS: StudentSearchParams = {
   q: "",
   grade: "",
   has_github: false,
+  has_skills: false,
   has_qualifications: false,
   has_intern_experience: false,
   desired_locations: [],
@@ -101,30 +102,6 @@ export function CompanyStudents({
     void fetchStudents(draftFilters);
   }
 
-  function handleGradeChange(grade: string) {
-    const next = { ...draftFilters, grade };
-    setDraftFilters(next);
-    void fetchStudents(next);
-  }
-
-  function handleHasGithubChange(hasGithub: boolean) {
-    const next = { ...draftFilters, has_github: hasGithub };
-    setDraftFilters(next);
-    void fetchStudents(next);
-  }
-
-  function handleHasQualificationsChange(hasQualifications: boolean) {
-    const next = { ...draftFilters, has_qualifications: hasQualifications };
-    setDraftFilters(next);
-    void fetchStudents(next);
-  }
-
-  function handleHasInternExperienceChange(hasInternExperience: boolean) {
-    const next = { ...draftFilters, has_intern_experience: hasInternExperience };
-    setDraftFilters(next);
-    void fetchStudents(next);
-  }
-
   function handleClear() {
     setDraftFilters(EMPTY_FILTERS);
     void fetchStudents(EMPTY_FILTERS);
@@ -135,6 +112,7 @@ export function CompanyStudents({
     appliedFilters.q?.trim() ||
       appliedFilters.grade ||
       appliedFilters.has_github ||
+      appliedFilters.has_skills ||
       appliedFilters.has_qualifications ||
       appliedFilters.has_intern_experience ||
       (appliedFilters.desired_locations?.length ?? 0) > 0
@@ -190,7 +168,9 @@ export function CompanyStudents({
               <span className="mb-1 block font-medium">学年</span>
               <select
                 value={draftFilters.grade ?? ""}
-                onChange={(event) => handleGradeChange(event.target.value)}
+                onChange={(event) =>
+                  setDraftFilters((current) => ({ ...current, grade: event.target.value }))
+                }
                 className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500"
               >
                 <option value="">すべて</option>
@@ -206,7 +186,12 @@ export function CompanyStudents({
               <input
                 type="checkbox"
                 checked={Boolean(draftFilters.has_github)}
-                onChange={(event) => handleHasGithubChange(event.target.checked)}
+                onChange={(event) =>
+                  setDraftFilters((current) => ({
+                    ...current,
+                    has_github: event.target.checked,
+                  }))
+                }
                 className="size-4 rounded border-zinc-300"
               />
               <span className="font-medium">GitHubありのみ</span>
@@ -215,8 +200,28 @@ export function CompanyStudents({
             <label className="flex items-end gap-2 pb-2 text-sm text-zinc-700">
               <input
                 type="checkbox"
+                checked={Boolean(draftFilters.has_skills)}
+                onChange={(event) =>
+                  setDraftFilters((current) => ({
+                    ...current,
+                    has_skills: event.target.checked,
+                  }))
+                }
+                className="size-4 rounded border-zinc-300"
+              />
+              <span className="font-medium">ITスキルありのみ</span>
+            </label>
+
+            <label className="flex items-end gap-2 pb-2 text-sm text-zinc-700">
+              <input
+                type="checkbox"
                 checked={Boolean(draftFilters.has_qualifications)}
-                onChange={(event) => handleHasQualificationsChange(event.target.checked)}
+                onChange={(event) =>
+                  setDraftFilters((current) => ({
+                    ...current,
+                    has_qualifications: event.target.checked,
+                  }))
+                }
                 className="size-4 rounded border-zinc-300"
               />
               <span className="font-medium">資格ありのみ</span>
@@ -226,7 +231,12 @@ export function CompanyStudents({
               <input
                 type="checkbox"
                 checked={Boolean(draftFilters.has_intern_experience)}
-                onChange={(event) => handleHasInternExperienceChange(event.target.checked)}
+                onChange={(event) =>
+                  setDraftFilters((current) => ({
+                    ...current,
+                    has_intern_experience: event.target.checked,
+                  }))
+                }
                 className="size-4 rounded border-zinc-300"
               />
               <span className="font-medium">インターン経験ありのみ</span>

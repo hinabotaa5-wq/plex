@@ -6,7 +6,6 @@ export type StudentProfile = {
   grade: string;
   self_pr: string | null;
   github_url: string | null;
-  portfolio_url: string | null;
   faculty: string | null;
   desired_job_type: string | null;
   desired_location: string[] | string | null;
@@ -14,7 +13,6 @@ export type StudentProfile = {
   skills: string | null;
   qualifications: string | null;
   intern_experience: string | null;
-  job_hunting_status: string | null;
 };
 
 export type CompanyProfile = {
@@ -58,9 +56,7 @@ export type StudentListItem = {
   skills: string | null;
   qualifications: string | null;
   intern_experience: string | null;
-  job_hunting_status: string | null;
   github_url: string | null;
-  portfolio_url: string | null;
 };
 
 export type ScoutStatus = "sent" | "accepted" | "declined";
@@ -107,6 +103,7 @@ export type StudentSearchParams = {
   q?: string;
   grade?: string;
   has_github?: boolean;
+  has_skills?: boolean;
   has_qualifications?: boolean;
   has_intern_experience?: boolean;
   desired_locations?: string[];
@@ -159,7 +156,6 @@ export type UpdateStudentProfilePayload = {
   grade: string;
   self_pr?: string | null;
   github_url?: string | null;
-  portfolio_url?: string | null;
   faculty?: string | null;
   desired_job_type?: string | null;
   desired_location?: string[] | string | null;
@@ -167,7 +163,6 @@ export type UpdateStudentProfilePayload = {
   skills?: string | null;
   qualifications?: string | null;
   intern_experience?: string | null;
-  job_hunting_status?: string | null;
 };
 
 export type UpdateCompanyProfilePayload = {
@@ -201,7 +196,6 @@ export type SignupPayload =
         grade: string;
         self_pr?: string | null;
         github_url?: string | null;
-        portfolio_url?: string | null;
       };
     }
   | {

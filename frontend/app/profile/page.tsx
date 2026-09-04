@@ -102,7 +102,7 @@ export default function ProfilePage() {
               )}
               {user.profile.skills && (
                 <div>
-                  <dt className="text-zinc-500">スキル</dt>
+                  <dt className="text-zinc-500">ITスキル</dt>
                   <dd className="mt-1 font-medium text-zinc-900">{user.profile.skills}</dd>
                 </div>
               )}
@@ -122,17 +122,9 @@ export default function ProfilePage() {
                   </dd>
                 </div>
               )}
-              {user.profile.job_hunting_status && (
-                <div>
-                  <dt className="text-zinc-500">就活状況</dt>
-                  <dd className="mt-1 font-medium text-zinc-900">
-                    {user.profile.job_hunting_status}
-                  </dd>
-                </div>
-              )}
               {user.profile.github_url && (
                 <div>
-                  <dt className="text-zinc-500">GitHub</dt>
+                  <dt className="text-zinc-500">GitHub URL・ポートフォリオ URL</dt>
                   <dd className="mt-1 font-medium text-zinc-900">
                     <a
                       href={user.profile.github_url}

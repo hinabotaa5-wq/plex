@@ -114,13 +114,12 @@ export function StudentDetailModal({
           )}
           <Field label="自己PR" value={student?.self_pr} />
           <Field label="ガクチカ" value={student?.gakuchika} />
-          <Field label="スキル" value={student?.skills} />
+          <Field label="ITスキル" value={student?.skills} />
           <Field label="資格" value={student?.qualifications} />
           <Field label="インターン経験" value={student?.intern_experience} />
-          <Field label="就活状況" value={student?.job_hunting_status} />
           {student?.github_url && (
             <div>
-              <dt className="text-zinc-500">GitHub</dt>
+              <dt className="text-zinc-500">GitHub URL・ポートフォリオ URL</dt>
               <dd className="mt-1 font-medium text-zinc-900">
                 <a
                   href={student.github_url}
@@ -129,21 +128,6 @@ export function StudentDetailModal({
                   className="underline"
                 >
                   {student.github_url}
-                </a>
-              </dd>
-            </div>
-          )}
-          {student?.portfolio_url && (
-            <div>
-              <dt className="text-zinc-500">ポートフォリオ</dt>
-              <dd className="mt-1 font-medium text-zinc-900">
-                <a
-                  href={student.portfolio_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  {student.portfolio_url}
                 </a>
               </dd>
             </div>

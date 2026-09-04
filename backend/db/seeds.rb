@@ -8,7 +8,6 @@ student1.create_student_profile!(
   grade: "大学3年",
   self_pr: "Ruby on Rails と TypeScript を学習中です。インターンで実践的な開発に挑戦したいです。",
   github_url: "https://github.com/example-yamada",
-  portfolio_url: "https://yamada.example.com"
 ) unless student1.student_profile
 
 student2 = User.find_or_create_by!(email: "student2@example.com") do |user|

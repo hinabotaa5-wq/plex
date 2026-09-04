@@ -7,7 +7,6 @@ one:
   grade: MyString
   self_pr: MyText
   github_url: MyString
-  portfolio_url: MyString
 
 two:
   user: two
@@ -16,4 +15,3 @@ two:
   grade: MyString
   self_pr: MyText
   github_url: MyString
-  portfolio_url: MyString

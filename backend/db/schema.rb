@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_120800) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_04_135100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,9 +77,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_120800) do
     t.string "github_url"
     t.string "grade", null: false
     t.text "intern_experience"
-    t.string "job_hunting_status"
     t.string "name", null: false
-    t.string "portfolio_url"
     t.text "qualifications"
     t.text "self_pr"
     t.text "skills"

@@ -26,6 +26,7 @@ module Api
         students = filter_by_q(students) if params[:q].present?
         students = students.where(grade: params[:grade]) if params[:grade].present?
         students = filter_by_has_github(students) if params[:has_github].to_s == "true"
+        students = filter_by_has_skills(students) if params[:has_skills].to_s == "true"
         students = filter_by_has_qualifications(students) if params[:has_qualifications].to_s == "true"
         students = filter_by_has_intern_experience(students) if params[:has_intern_experience].to_s == "true"
         students = filter_by_desired_locations(students)
@@ -42,6 +43,10 @@ module Api
 
       def filter_by_has_github(students)
         students.where.not(github_url: [nil, ""])
+      end
+
+      def filter_by_has_skills(students)
+        students.where.not(skills: [nil, ""])
       end
 
       def filter_by_has_qualifications(students)
@@ -66,8 +71,8 @@ module Api
           :id, :name, :university, :grade, :faculty,
           :desired_job_type, :desired_location,
           :self_pr, :gakuchika, :skills, :qualifications,
-          :intern_experience, :job_hunting_status,
-          :github_url, :portfolio_url
+          :intern_experience,
+          :github_url
         )
       end
     end

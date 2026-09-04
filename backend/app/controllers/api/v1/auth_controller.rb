@@ -35,7 +35,7 @@ module Api
           :password,
           :role,
           student_profile_attributes: [
-            :name, :university, :grade, :self_pr, :github_url, :portfolio_url
+            :name, :university, :grade, :self_pr, :github_url
           ],
           company_profile_attributes: [ :name, :description, :website_url ]
         )
@@ -68,9 +68,9 @@ module Api
       def profile_payload(user)
         if user.student?
           user.student_profile&.slice(
-            :name, :university, :grade, :self_pr, :github_url, :portfolio_url,
+            :name, :university, :grade, :self_pr, :github_url,
             :faculty, :desired_job_type, :desired_location, :gakuchika,
-            :skills, :qualifications, :intern_experience, :job_hunting_status
+            :skills, :qualifications, :intern_experience
           )
         else
           user.company_profile&.slice(
