@@ -13,6 +13,10 @@ export type StudentProfile = {
   skills: string | null;
   qualifications: string | null;
   intern_experience: string | null;
+  available_days_per_week: string | null;
+  available_weekdays: string[] | string | null;
+  available_time_from: string | null;
+  available_time_to: string | null;
 };
 
 export type CompanyProfile = {
@@ -57,6 +61,10 @@ export type StudentListItem = {
   qualifications: string | null;
   intern_experience: string | null;
   github_url: string | null;
+  available_days_per_week: string | null;
+  available_weekdays: string[] | string | null;
+  available_time_from: string | null;
+  available_time_to: string | null;
 };
 
 export type ScoutStatus = "sent" | "accepted" | "declined";
@@ -163,6 +171,10 @@ export type UpdateStudentProfilePayload = {
   skills?: string | null;
   qualifications?: string | null;
   intern_experience?: string | null;
+  available_days_per_week?: string | null;
+  available_weekdays?: string[] | string | null;
+  available_time_from?: string | null;
+  available_time_to?: string | null;
 };
 
 export type UpdateCompanyProfilePayload = {
@@ -209,7 +221,7 @@ export type SignupPayload =
       };
     };
 
-export function parseDesiredLocations(
+export function parseStringList(
   value: string[] | string | null | undefined
 ): string[] {
   if (Array.isArray(value)) {
@@ -232,6 +244,29 @@ export function parseDesiredLocations(
   }
 
   return [trimmed];
+}
+
+export function parseDesiredLocations(
+  value: string[] | string | null | undefined
+): string[] {
+  return parseStringList(value);
+}
+
+export function formatAvailableTime(
+  from: string | null | undefined,
+  to: string | null | undefined
+): string | null {
+  const start = normalizeTime(from);
+  const end = normalizeTime(to);
+  if (!start && !end) return null;
+  if (start && end) return `${start}〜${end}`;
+  return start || end;
+}
+
+function normalizeTime(value: string | null | undefined): string {
+  const trimmed = value?.trim() ?? "";
+  if (!trimmed) return "";
+  return trimmed.length >= 5 ? trimmed.slice(0, 5) : trimmed;
 }
 
 export function isStudentProfile(

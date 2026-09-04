@@ -70,7 +70,9 @@ module Api
           user.student_profile&.slice(
             :name, :university, :grade, :self_pr, :github_url,
             :faculty, :desired_job_type, :desired_location, :gakuchika,
-            :skills, :qualifications, :intern_experience
+            :skills, :qualifications, :intern_experience,
+            :available_days_per_week, :available_weekdays,
+            :available_time_from, :available_time_to
           )
         else
           user.company_profile&.slice(

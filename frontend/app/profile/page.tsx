@@ -9,6 +9,8 @@ import {
   isCompanyProfile,
   isStudentProfile,
   parseDesiredLocations,
+  parseStringList,
+  formatAvailableTime,
 } from "@/lib/types";
 
 export default function ProfilePage() {
@@ -30,6 +32,15 @@ export default function ProfilePage() {
   const desiredLocations = isStudentProfile(user)
     ? parseDesiredLocations(user.profile.desired_location)
     : [];
+  const availableWeekdays = isStudentProfile(user)
+    ? parseStringList(user.profile.available_weekdays)
+    : [];
+  const availableTime = isStudentProfile(user)
+    ? formatAvailableTime(
+        user.profile.available_time_from,
+        user.profile.available_time_to
+      )
+    : null;
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-16">
@@ -86,6 +97,35 @@ export default function ProfilePage() {
                       </span>
                     ))}
                   </dd>
+                </div>
+              )}
+              {user.profile.available_days_per_week && (
+                <div>
+                  <dt className="text-zinc-500">稼働可能日数</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">
+                    {user.profile.available_days_per_week}
+                  </dd>
+                </div>
+              )}
+              {availableWeekdays.length > 0 && (
+                <div>
+                  <dt className="text-zinc-500">曜日</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1.5">
+                    {availableWeekdays.map((day) => (
+                      <span
+                        key={day}
+                        className="inline-flex rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800"
+                      >
+                        {day}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              )}
+              {availableTime && (
+                <div>
+                  <dt className="text-zinc-500">稼働可能時間</dt>
+                  <dd className="mt-1 font-medium text-zinc-900">{availableTime}</dd>
                 </div>
               )}
               {user.profile.self_pr && (

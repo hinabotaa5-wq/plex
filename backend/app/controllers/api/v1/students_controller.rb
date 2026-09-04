@@ -72,7 +72,9 @@ module Api
           :desired_job_type, :desired_location,
           :self_pr, :gakuchika, :skills, :qualifications,
           :intern_experience,
-          :github_url
+          :github_url,
+          :available_days_per_week, :available_weekdays,
+          :available_time_from, :available_time_to
         )
       end
     end

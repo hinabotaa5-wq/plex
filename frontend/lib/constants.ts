@@ -80,3 +80,14 @@ export const PREFECTURE_REGIONS: PrefectureRegion[] = [
 export const PREFECTURES = PREFECTURE_REGIONS.flatMap(
   (group) => group.prefectures
 );
+
+export const WEEKDAYS = ["月", "火", "水", "木", "金", "土", "日"] as const;
+
+export const AVAILABLE_DAYS_PER_WEEK = [
+  "週1日",
+  "週2日",
+  "週3日",
+  "週4日",
+  "週5日以上",
+  "応相談",
+] as const;

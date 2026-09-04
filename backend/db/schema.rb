@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_135100) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_04_153600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_135100) do
   end
 
   create_table "student_profiles", force: :cascade do |t|
+    t.string "available_days_per_week"
+    t.string "available_time_from"
+    t.string "available_time_to"
+    t.string "available_weekdays"
     t.datetime "created_at", null: false
     t.string "desired_job_type"
     t.string "desired_location"

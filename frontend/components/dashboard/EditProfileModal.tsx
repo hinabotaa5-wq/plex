@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, updateProfile } from "@/lib/api";
 import { PrefectureSelector } from "@/components/ui/PrefectureSelector";
+import { AVAILABLE_DAYS_PER_WEEK, WEEKDAYS } from "@/lib/constants";
 import {
   isCompanyProfile,
   isStudentProfile,
   parseDesiredLocations,
+  parseStringList,
   type User,
 } from "@/lib/types";
 
@@ -47,6 +49,10 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
   const [faculty, setFaculty] = useState("");
   const [desiredJobType, setDesiredJobType] = useState("");
   const [desiredLocation, setDesiredLocation] = useState<string[]>([]);
+  const [availableDaysPerWeek, setAvailableDaysPerWeek] = useState("");
+  const [availableWeekdays, setAvailableWeekdays] = useState<string[]>([]);
+  const [availableTimeFrom, setAvailableTimeFrom] = useState("");
+  const [availableTimeTo, setAvailableTimeTo] = useState("");
   const [selfPr, setSelfPr] = useState("");
   const [gakuchika, setGakuchika] = useState("");
   const [skills, setSkills] = useState("");
@@ -80,6 +86,10 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
         setFaculty(user.profile.faculty ?? "");
         setDesiredJobType(user.profile.desired_job_type ?? "");
         setDesiredLocation(parseDesiredLocations(user.profile.desired_location));
+        setAvailableDaysPerWeek(user.profile.available_days_per_week ?? "");
+        setAvailableWeekdays(parseStringList(user.profile.available_weekdays));
+        setAvailableTimeFrom((user.profile.available_time_from ?? "").slice(0, 5));
+        setAvailableTimeTo((user.profile.available_time_to ?? "").slice(0, 5));
         setSelfPr(user.profile.self_pr ?? "");
         setGakuchika(user.profile.gakuchika ?? "");
         setSkills(user.profile.skills ?? "");
@@ -122,6 +132,13 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
           faculty: optional(faculty),
           desired_job_type: optional(desiredJobType),
           desired_location: desiredLocation.length > 0 ? desiredLocation : null,
+          available_days_per_week: optional(availableDaysPerWeek),
+          available_weekdays:
+            availableWeekdays.length > 0
+              ? WEEKDAYS.filter((day) => availableWeekdays.includes(day))
+              : null,
+          available_time_from: optional(availableTimeFrom),
+          available_time_to: optional(availableTimeTo),
           self_pr: optional(selfPr),
           gakuchika: optional(gakuchika),
           skills: hasSkills ? optional(skills) : null,
@@ -230,6 +247,71 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
                 selected={desiredLocation}
                 onChange={setDesiredLocation}
               />
+            </div>
+            <label className="block">
+              <span className="text-sm font-medium text-zinc-700">稼働可能日数</span>
+              <select
+                value={availableDaysPerWeek}
+                onChange={(event) => setAvailableDaysPerWeek(event.target.value)}
+                className={inputClass}
+              >
+                <option value="">未設定</option>
+                {AVAILABLE_DAYS_PER_WEEK.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <fieldset>
+              <legend className="text-sm font-medium text-zinc-700">曜日</legend>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {WEEKDAYS.map((day) => {
+                  const checked = availableWeekdays.includes(day);
+                  return (
+                    <label
+                      key={day}
+                      className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm ${
+                        checked
+                          ? "border-zinc-900 bg-zinc-900 text-white"
+                          : "border-zinc-300 bg-white text-zinc-700"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() =>
+                          setAvailableWeekdays((current) =>
+                            current.includes(day)
+                              ? current.filter((item) => item !== day)
+                              : [...current, day]
+                          )
+                        }
+                        className="sr-only"
+                      />
+                      {day}
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+            <div>
+              <span className="text-sm font-medium text-zinc-700">稼働可能時間</span>
+              <div className="mt-1 flex items-center gap-2">
+                <input
+                  type="time"
+                  value={availableTimeFrom}
+                  onChange={(event) => setAvailableTimeFrom(event.target.value)}
+                  className={inputClass}
+                />
+                <span className="text-sm text-zinc-500">〜</span>
+                <input
+                  type="time"
+                  value={availableTimeTo}
+                  onChange={(event) => setAvailableTimeTo(event.target.value)}
+                  className={inputClass}
+                />
+              </div>
             </div>
             <label className="block">
               <span className="text-sm font-medium text-zinc-700">自己PR</span>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { parseDesiredLocations, type StudentListItem } from "@/lib/types";
+import { parseDesiredLocations, parseStringList, formatAvailableTime, type StudentListItem } from "@/lib/types";
 
 type StudentDetailModalProps = {
   student: StudentListItem | null;
@@ -66,6 +66,12 @@ export function StudentDetailModal({
   const desiredLocations = student
     ? parseDesiredLocations(student.desired_location)
     : [];
+  const availableWeekdays = student
+    ? parseStringList(student.available_weekdays)
+    : [];
+  const availableTime = student
+    ? formatAvailableTime(student.available_time_from, student.available_time_to)
+    : null;
 
   const dialog = (
     <dialog
@@ -112,6 +118,23 @@ export function StudentDetailModal({
               </dd>
             </div>
           )}
+          <Field label="稼働可能日数" value={student?.available_days_per_week} />
+          {availableWeekdays.length > 0 && (
+            <div>
+              <dt className="text-zinc-500">曜日</dt>
+              <dd className="mt-1 flex flex-wrap gap-1.5">
+                {availableWeekdays.map((day) => (
+                  <span
+                    key={day}
+                    className="inline-flex rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800"
+                  >
+                    {day}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          )}
+          <Field label="稼働可能時間" value={availableTime} />
           <Field label="自己PR" value={student?.self_pr} />
           <Field label="ガクチカ" value={student?.gakuchika} />
           <Field label="ITスキル" value={student?.skills} />

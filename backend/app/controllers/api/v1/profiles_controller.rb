@@ -47,11 +47,19 @@ module Api
             :name, :university, :grade, :self_pr, :github_url,
             :faculty, :desired_job_type, :gakuchika,
             :skills, :qualifications, :intern_experience,
-            desired_location: []
+            :available_days_per_week, :available_time_from, :available_time_to,
+            desired_location: [],
+            available_weekdays: []
           )
           attrs = normalize_blank_urls(permitted)
+          %w[available_days_per_week available_time_from available_time_to].each do |key|
+            attrs[key] = nil if attrs[key].is_a?(String) && attrs[key].strip.empty?
+          end
           if params[:profile].key?(:desired_location)
             attrs["desired_location"] = serialize_desired_location(params[:profile][:desired_location])
+          end
+          if params[:profile].key?(:available_weekdays)
+            attrs["available_weekdays"] = serialize_available_weekdays(params[:profile][:available_weekdays])
           end
           attrs
         else
@@ -64,6 +72,16 @@ module Api
       end
 
       def serialize_desired_location(value)
+        locations = parse_string_list(value)
+        locations.empty? ? nil : locations.to_json
+      end
+
+      def serialize_available_weekdays(value)
+        weekdays = StudentProfile::WEEKDAYS & parse_string_list(value)
+        weekdays.empty? ? nil : weekdays.to_json
+      end
+
+      def parse_string_list(value)
         items =
           case value
           when nil
@@ -77,8 +95,7 @@ module Api
             Array.wrap(value)
           end
 
-        locations = items.map { |item| item.to_s.strip }.reject(&:blank?).uniq
-        locations.empty? ? nil : locations.to_json
+        items.map { |item| item.to_s.strip }.reject(&:blank?).uniq
       end
 
       def parse_json_array(value)
@@ -111,7 +128,9 @@ module Api
           current_profile.slice(
             :name, :university, :grade, :self_pr, :github_url,
             :faculty, :desired_job_type, :desired_location, :gakuchika,
-            :skills, :qualifications, :intern_experience
+            :skills, :qualifications, :intern_experience,
+            :available_days_per_week, :available_weekdays,
+            :available_time_from, :available_time_to
           )
         else
           current_profile.slice(
