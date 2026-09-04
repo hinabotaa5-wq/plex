@@ -323,6 +323,7 @@ export function CompanyStudents({
         scouts={sentScouts}
         chatScoutId={chatScoutId}
         onDeepLinkConsumed={onDeepLinkConsumed}
+        onViewStudent={setDetailStudent}
       />
 
       <StudentDetailModal

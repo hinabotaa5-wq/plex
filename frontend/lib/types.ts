@@ -95,12 +95,7 @@ export type SentScout = {
   subject: string;
   body: string;
   created_at: string;
-  student: {
-    id: number;
-    name: string;
-    university: string;
-    grade: string;
-  };
+  student: StudentListItem;
 };
 
 export type StudentsResponse = {

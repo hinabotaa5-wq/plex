@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChatModal } from "@/components/dashboard/ChatModal";
-import type { ScoutStatus, SentScout } from "@/lib/types";
+import type { ScoutStatus, SentScout, StudentListItem } from "@/lib/types";
 
 const STATUS_LABEL: Record<ScoutStatus, string> = {
   sent: "未回答",
@@ -18,12 +18,14 @@ type CompanySentScoutsProps = {
   scouts: SentScout[];
   chatScoutId?: number | null;
   onDeepLinkConsumed?: () => void;
+  onViewStudent: (student: StudentListItem) => void;
 };
 
 export function CompanySentScouts({
   scouts,
   chatScoutId = null,
   onDeepLinkConsumed,
+  onViewStudent,
 }: CompanySentScoutsProps) {
   const [chatScout, setChatScout] = useState<SentScout | null>(null);
 
@@ -62,15 +64,24 @@ export function CompanySentScouts({
               </div>
               <p className="mt-4 text-sm font-medium text-zinc-900">{scout.subject}</p>
               <p className="mt-2 text-xs text-zinc-500">送信日: {formatDate(scout.created_at)}</p>
-              {scout.status === "accepted" && (
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => setChatScout(scout)}
-                  className="mt-4 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                  onClick={() => onViewStudent(scout.student)}
+                  className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
                 >
-                  メッセージ
+                  詳細を見る
                 </button>
-              )}
+                {scout.status === "accepted" && (
+                  <button
+                    type="button"
+                    onClick={() => setChatScout(scout)}
+                    className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                  >
+                    メッセージ
+                  </button>
+                )}
+              </div>
             </li>
           ))}
         </ul>

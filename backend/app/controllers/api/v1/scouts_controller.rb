@@ -127,7 +127,15 @@ module Api
           subject: scout.subject,
           body: scout.body,
           created_at: scout.created_at,
-          student: scout.student_profile.slice(:id, :name, :university, :grade)
+          student: scout.student_profile.slice(
+            :id, :name, :university, :grade, :faculty,
+            :desired_job_type, :desired_location,
+            :self_pr, :gakuchika, :skills, :qualifications,
+            :intern_experience,
+            :github_url,
+            :available_days_per_week, :available_weekdays,
+            :available_time_from, :available_time_to
+          )
         }
       end
     end
