@@ -7,7 +7,7 @@ export default function HomePage() {
   const { user, loading } = useAuth();
 
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-start justify-center px-4 py-24">
+    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-start justify-center px-4 py-12 sm:py-24">
       <h1 className="text-4xl font-semibold tracking-tight text-zinc-900">
         インターンマッチ
       </h1>

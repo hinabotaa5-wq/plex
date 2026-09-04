@@ -43,8 +43,8 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <main className="flex flex-1 items-center justify-center px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:py-16">
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-8">
         <Link
           href="/"
           aria-label="トップに戻る"

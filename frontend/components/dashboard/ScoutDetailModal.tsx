@@ -66,13 +66,13 @@ export function ScoutDetailModal({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40"
+      className="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40 max-sm:m-0 max-sm:h-dvh max-sm:max-h-dvh max-sm:max-w-none max-sm:rounded-none max-sm:border-0"
     >
-      <div className="flex max-h-[90vh] flex-col">
-        <div className="border-b border-zinc-200 px-6 py-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-semibold text-zinc-900">
+      <div className="flex h-full max-h-[90vh] flex-col max-sm:max-h-none">
+        <div className="border-b border-zinc-200 px-4 py-4 sm:px-6 max-sm:pt-[max(1rem,env(safe-area-inset-top))]">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="min-w-0">
+              <h2 className="text-lg font-semibold break-words text-zinc-900">
                 {scout?.subject ?? "スカウト詳細"}
               </h2>
               <p className="mt-1 text-sm text-zinc-500">{scout?.company.name ?? ""}</p>
@@ -85,7 +85,7 @@ export function ScoutDetailModal({
           </div>
         </div>
 
-        <div className="space-y-6 overflow-y-auto px-6 py-4 text-sm">
+        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 py-4 text-sm sm:px-6">
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">メッセージ</h3>
             <p className="mt-2 whitespace-pre-wrap leading-6 text-zinc-700">{scout?.body}</p>
@@ -159,11 +159,11 @@ export function ScoutDetailModal({
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-end gap-2 border-t border-zinc-200 px-6 py-4">
+        <div className="flex flex-col gap-2 border-t border-zinc-200 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:flex-wrap sm:justify-end sm:px-6">
           <button
             type="button"
             onClick={() => dialogRef.current?.close()}
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            className="w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:w-auto"
           >
             閉じる
           </button>
@@ -173,7 +173,7 @@ export function ScoutDetailModal({
                 type="button"
                 disabled={updating}
                 onClick={onDecline}
-                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
+                className="w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60 sm:w-auto"
               >
                 辞退
               </button>
@@ -181,7 +181,7 @@ export function ScoutDetailModal({
                 type="button"
                 disabled={updating}
                 onClick={onAccept}
-                className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60"
+                className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60 sm:w-auto"
               >
                 承諾
               </button>
@@ -191,7 +191,7 @@ export function ScoutDetailModal({
             <button
               type="button"
               onClick={handleMessage}
-              className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+              className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
             >
               メッセージ
             </button>

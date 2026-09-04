@@ -26,7 +26,7 @@ export function AppHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
+    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white pt-[env(safe-area-inset-top)]">
       <div className="flex h-14 items-center justify-between px-4 sm:px-6">
         <a
           href="/dashboard"

@@ -43,8 +43,8 @@ export default function ProfilePage() {
     : null;
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-16">
-      <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:gap-8 sm:py-16">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-8">
         <p className="text-sm text-zinc-500">マイページ</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">
           {displayName}
@@ -170,7 +170,7 @@ export default function ProfilePage() {
                       href={user.profile.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline"
+                      className="underline break-all"
                     >
                       {user.profile.github_url}
                     </a>
@@ -241,7 +241,7 @@ export default function ProfilePage() {
                       href={user.profile.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline"
+                      className="underline break-all"
                     >
                       {user.profile.website_url}
                     </a>
@@ -252,17 +252,17 @@ export default function ProfilePage() {
           )}
         </dl>
 
-        <div className="mt-8 flex flex-wrap gap-2">
+        <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           <button
             type="button"
             onClick={() => setEditOpen(true)}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+            className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
           >
             プロフィールを編集
           </button>
           <Link
             href="/dashboard"
-            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 text-center text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:w-auto"
           >
             戻る
           </Link>

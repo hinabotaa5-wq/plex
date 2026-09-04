@@ -35,7 +35,7 @@ function DashboardContent() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-16">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:gap-8 sm:py-16">
       {user.role === "company" && (
         <CompanyStudents
           chatScoutId={chatScoutId}

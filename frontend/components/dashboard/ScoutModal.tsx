@@ -76,9 +76,11 @@ export function ScoutModal({ student, open, onClose, onSent }: ScoutModalProps) 
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-lg backdrop:bg-black/40"
+      className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-4 shadow-lg backdrop:bg-black/40 max-sm:m-0 max-sm:h-dvh max-sm:max-h-dvh max-sm:max-w-none max-sm:rounded-none max-sm:border-0 sm:p-6"
     >
-      <h2 className="text-lg font-semibold text-zinc-900">スカウト送信</h2>
+      <h2 className="text-lg font-semibold text-zinc-900 max-sm:pt-[max(0px,env(safe-area-inset-top))]">
+        スカウト送信
+      </h2>
       <p className="mt-1 text-sm text-zinc-500">
         宛先: {student?.name ?? ""}
       </p>
@@ -113,19 +115,19 @@ export function ScoutModal({ student, open, onClose, onSent }: ScoutModalProps) 
           </ul>
         )}
 
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col gap-2 pb-[max(0px,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
+            className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50 disabled:opacity-60 sm:w-auto"
           >
             キャンセル
           </button>
           <button
             type="submit"
             disabled={submitting || locked}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60"
+            className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60 sm:w-auto"
           >
             {submitting ? "送信中..." : "送信"}
           </button>

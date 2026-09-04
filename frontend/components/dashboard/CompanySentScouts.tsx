@@ -51,10 +51,10 @@ export function CompanySentScouts({
           {scouts.map((scout) => (
             <li
               key={scout.id}
-              className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
+              className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div>
+              <div className="flex items-start justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
                   <h3 className="text-base font-semibold text-zinc-900">{scout.student.name}</h3>
                   <p className="mt-1 text-sm text-zinc-500">{scout.student.university}</p>
                 </div>
@@ -64,11 +64,11 @@ export function CompanySentScouts({
               </div>
               <p className="mt-4 text-sm font-medium text-zinc-900">{scout.subject}</p>
               <p className="mt-2 text-xs text-zinc-500">送信日: {formatDate(scout.created_at)}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                 <button
                   type="button"
                   onClick={() => onViewStudent(scout.student)}
-                  className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                  className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
                 >
                   詳細を見る
                 </button>
@@ -76,7 +76,7 @@ export function CompanySentScouts({
                   <button
                     type="button"
                     onClick={() => setChatScout(scout)}
-                    className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+                    className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
                   >
                     メッセージ
                   </button>

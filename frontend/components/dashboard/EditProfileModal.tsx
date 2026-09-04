@@ -192,9 +192,11 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-lg backdrop:bg-black/40"
+      className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-4 shadow-lg backdrop:bg-black/40 max-sm:m-0 max-sm:h-dvh max-sm:max-h-dvh max-sm:max-w-none max-sm:rounded-none max-sm:border-0 sm:p-6"
     >
-      <h2 className="text-lg font-semibold text-zinc-900">プロフィールを編集</h2>
+      <h2 className="text-lg font-semibold text-zinc-900 max-sm:pt-[max(0px,env(safe-area-inset-top))]">
+        プロフィールを編集
+      </h2>
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
         {user.role === "student" ? (
           <>
@@ -311,7 +313,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
             </fieldset>
             <div>
               <span className="text-sm font-medium text-zinc-700">稼働可能時間</span>
-              <div className="mt-1 flex items-center gap-2">
+              <div className="mt-1 flex min-w-0 items-center gap-2">
                 <input
                   type="time"
                   required
@@ -549,18 +551,18 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
           </ul>
         )}
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex flex-col gap-2 pt-2 pb-[max(0px,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            className="w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:w-auto"
           >
             キャンセル
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:bg-zinc-400"
+            className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 disabled:bg-zinc-400 sm:w-auto"
           >
             {submitting ? "保存中..." : "保存する"}
           </button>

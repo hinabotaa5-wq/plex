@@ -77,15 +77,15 @@ export function StudentDetailModal({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40"
+      className="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40 max-sm:m-0 max-sm:h-dvh max-sm:max-h-dvh max-sm:max-w-none max-sm:rounded-none max-sm:border-0"
     >
-      <div className="flex max-h-[90vh] flex-col">
-        <div className="border-b border-zinc-200 px-6 py-4">
+      <div className="flex h-full max-h-[90vh] flex-col max-sm:max-h-none">
+        <div className="border-b border-zinc-200 px-4 py-4 sm:px-6 max-sm:pt-[max(1rem,env(safe-area-inset-top))]">
           <h2 className="text-lg font-semibold text-zinc-900">学生詳細</h2>
           <p className="mt-1 text-sm text-zinc-500">{student?.name ?? ""}</p>
         </div>
 
-        <dl className="space-y-4 overflow-y-auto px-6 py-4 text-sm">
+        <dl className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4 text-sm sm:px-6">
           <div>
             <dt className="text-zinc-500">氏名</dt>
             <dd className="mt-1 font-medium text-zinc-900">{student?.name}</dd>
@@ -148,7 +148,7 @@ export function StudentDetailModal({
                   href={student.github_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline"
+                    className="underline break-all"
                 >
                   {student.github_url}
                 </a>
@@ -157,11 +157,11 @@ export function StudentDetailModal({
           )}
         </dl>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 px-6 py-4">
+        <div className="flex flex-col gap-2 border-t border-zinc-200 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end sm:px-6">
           <button
             type="button"
             onClick={() => dialogRef.current?.close()}
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            className="w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:w-auto"
           >
             閉じる
           </button>
@@ -169,7 +169,7 @@ export function StudentDetailModal({
             type="button"
             disabled={sent}
             onClick={handleScout}
-            className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:bg-zinc-300 disabled:text-zinc-600"
+            className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 disabled:bg-zinc-300 disabled:text-zinc-600 sm:w-auto"
           >
             {sent ? "送信済み" : "スカウトする"}
           </button>

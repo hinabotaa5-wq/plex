@@ -77,17 +77,17 @@ export function PrefectureSelector({
           event.stopPropagation();
         }}
         onClick={(event) => event.stopPropagation()}
-        className="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40"
+        className="w-full max-w-lg max-h-[90vh] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40 max-sm:m-0 max-sm:h-dvh max-sm:max-h-dvh max-sm:max-w-none max-sm:rounded-none max-sm:border-0"
       >
-        <div className="flex max-h-[90vh] flex-col">
-          <div className="border-b border-zinc-200 px-6 py-4">
+        <div className="flex h-full max-h-[90vh] flex-col max-sm:max-h-none">
+          <div className="border-b border-zinc-200 px-4 py-4 sm:px-6 max-sm:pt-[max(1rem,env(safe-area-inset-top))]">
             <h3 className="text-lg font-semibold text-zinc-900">希望勤務地を選択</h3>
             <p className="mt-1 text-sm text-zinc-500">
               {draft.length === 0 ? "未選択" : `${draft.length}件選択中`}
             </p>
           </div>
 
-          <div className="space-y-3 overflow-y-auto px-6 py-4">
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 sm:px-6">
             {PREFECTURE_REGIONS.map((group) => (
               <fieldset key={group.region}>
                 <legend className="text-xs font-semibold text-zinc-500">
@@ -113,18 +113,18 @@ export function PrefectureSelector({
             ))}
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-zinc-200 px-6 py-4">
+          <div className="flex flex-col gap-2 border-t border-zinc-200 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end sm:px-6">
             <button
               type="button"
               onClick={handleCancel}
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:w-auto"
             >
               キャンセル
             </button>
             <button
               type="button"
               onClick={handleConfirm}
-              className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+              className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
             >
               決定
             </button>

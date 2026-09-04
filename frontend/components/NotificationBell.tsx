@@ -173,7 +173,7 @@ export function NotificationBell() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg sm:w-96"
+          className="fixed inset-x-4 top-[calc(3.5rem+env(safe-area-inset-top))] z-50 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-96"
         >
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
             <p className="text-sm font-medium text-zinc-900">通知</p>
@@ -191,7 +191,7 @@ export function NotificationBell() {
               通知はありません
             </p>
           ) : (
-            <ul className="max-h-80 overflow-y-auto">
+            <ul className="max-h-[min(20rem,calc(100dvh-8rem))] overflow-y-auto">
               {notifications.map((notification) => (
                 <li key={notification.id}>
                   <button
