@@ -14,7 +14,17 @@ const STATUS_LABEL: Record<ScoutStatus, string> = {
   declined: "辞退済み",
 };
 
-export function StudentScoutInbox() {
+type StudentScoutInboxProps = {
+  scoutId?: number | null;
+  chatScoutId?: number | null;
+  onDeepLinkConsumed?: () => void;
+};
+
+export function StudentScoutInbox({
+  scoutId = null,
+  chatScoutId = null,
+  onDeepLinkConsumed,
+}: StudentScoutInboxProps) {
   const router = useRouter();
   const { logout } = useAuth();
   const [scouts, setScouts] = useState<ReceivedScout[]>([]);
@@ -48,6 +58,27 @@ export function StudentScoutInbox() {
       cancelled = true;
     };
   }, [logout, router]);
+
+  useEffect(() => {
+    if (loading) return;
+    if (chatScoutId == null && scoutId == null) return;
+
+    if (chatScoutId != null) {
+      const scout = scouts.find((item) => item.id === chatScoutId);
+      if (scout) {
+        setDetailScoutId(null);
+        window.setTimeout(() => setChatScout(scout), 0);
+      }
+      onDeepLinkConsumed?.();
+      return;
+    }
+
+    if (scoutId != null && scouts.some((item) => item.id === scoutId)) {
+      setChatScout(null);
+      window.setTimeout(() => setDetailScoutId(scoutId), 0);
+    }
+    onDeepLinkConsumed?.();
+  }, [loading, scouts, scoutId, chatScoutId, onDeepLinkConsumed]);
 
   async function handleStatus(id: number, status: Extract<ScoutStatus, "accepted" | "declined">) {
     setUpdatingId(id);

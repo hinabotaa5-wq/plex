@@ -13,6 +13,7 @@ module Api
         message = @scout.messages.new(body: message_params[:body], user: current_user)
 
         if message.save
+          notify_recipient(message)
           render json: { message: message_payload(message) }, status: :created
         else
           render json: { errors: message.errors.full_messages }, status: :unprocessable_entity
@@ -42,6 +43,27 @@ module Api
 
       def message_params
         params.require(:message).permit(:body)
+      end
+
+      def notify_recipient(message)
+        recipient = message_recipient
+        return if recipient.blank? || recipient.id == current_user.id
+
+        Notification.notify!(
+          user: recipient,
+          action_type: "message_received",
+          title: "新しいメッセージが届きました",
+          body: message.body.truncate(40),
+          notifiable: message
+        )
+      end
+
+      def message_recipient
+        if current_user.company?
+          @scout.student_profile&.user
+        elsif current_user.student?
+          @scout.company_profile&.user
+        end
       end
 
       def message_payload(message)

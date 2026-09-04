@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
+import { NotificationBell } from "@/components/NotificationBell";
 import { UserDropdown } from "@/components/UserDropdown";
 
 export function AppHeader() {
@@ -16,7 +17,12 @@ export function AppHeader() {
         >
           プレックス
         </Link>
-        {!loading && user ? <UserDropdown /> : null}
+        {!loading && user ? (
+          <div className="flex items-center gap-1">
+            <NotificationBell />
+            <UserDropdown />
+          </div>
+        ) : null}
       </div>
     </header>
   );

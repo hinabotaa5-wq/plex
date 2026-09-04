@@ -45,6 +45,7 @@ module Api
         )
 
         if scout.save
+          notify_student(scout)
           render json: { scout: scout_payload_for_company(scout) }, status: :created
         else
           render json: { errors: scout.errors.full_messages }, status: :unprocessable_entity
@@ -81,6 +82,20 @@ module Api
 
       def update_params
         params.require(:scout).permit(:status)
+      end
+
+      def notify_student(scout)
+        recipient = scout.student_profile.user
+        return if recipient.blank?
+
+        company_name = scout.company_profile.name
+        Notification.notify!(
+          user: recipient,
+          action_type: "scout_received",
+          title: "新しいスカウトが届きました",
+          body: "#{company_name}から「#{scout.subject}」が届きました",
+          notifiable: scout
+        )
       end
 
       def scout_payload_for_student(scout)

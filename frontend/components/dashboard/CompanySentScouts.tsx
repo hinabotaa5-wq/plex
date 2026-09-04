@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatModal } from "@/components/dashboard/ChatModal";
 import type { ScoutStatus, SentScout } from "@/lib/types";
 
@@ -14,8 +14,28 @@ function formatDate(value: string) {
   return new Date(value).toLocaleDateString("ja-JP");
 }
 
-export function CompanySentScouts({ scouts }: { scouts: SentScout[] }) {
+type CompanySentScoutsProps = {
+  scouts: SentScout[];
+  chatScoutId?: number | null;
+  onDeepLinkConsumed?: () => void;
+};
+
+export function CompanySentScouts({
+  scouts,
+  chatScoutId = null,
+  onDeepLinkConsumed,
+}: CompanySentScoutsProps) {
   const [chatScout, setChatScout] = useState<SentScout | null>(null);
+
+  useEffect(() => {
+    if (chatScoutId == null) return;
+
+    const scout = scouts.find((item) => item.id === chatScoutId);
+    if (scout) {
+      setChatScout(scout);
+    }
+    onDeepLinkConsumed?.();
+  }, [scouts, chatScoutId, onDeepLinkConsumed]);
 
   return (
     <section>

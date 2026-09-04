@@ -8,6 +8,14 @@ Rails.application.routes.draw do
       get "me", to: "auth#me"
       resource :profile, only: [ :show, :update ]
       resources :students, only: [ :index ]
+      resources :notifications, only: [ :index ] do
+        collection do
+          patch :read_all
+        end
+        member do
+          patch :read
+        end
+      end
       resources :scouts, only: [ :index, :create, :update ] do
         resources :messages, only: [ :index, :create ]
       end

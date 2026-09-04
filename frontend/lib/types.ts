@@ -128,6 +128,25 @@ export type ChatMessage = {
   sender_role: UserRole;
 };
 
+export type NotificationActionType = "scout_received" | "message_received";
+
+export type Notification = {
+  id: number;
+  action_type: NotificationActionType;
+  title: string;
+  body: string | null;
+  is_read: boolean;
+  notifiable_type: string;
+  notifiable_id: number;
+  scout_id: number | null;
+  created_at: string;
+};
+
+export type NotificationsResponse = {
+  notifications: Notification[];
+  unread_count: number;
+};
+
 export type CreateScoutPayload = {
   student_profile_id: number;
   subject: string;

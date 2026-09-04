@@ -29,7 +29,15 @@ const EMPTY_FILTERS: StudentSearchParams = {
   desired_locations: [],
 };
 
-export function CompanyStudents() {
+type CompanyStudentsProps = {
+  chatScoutId?: number | null;
+  onDeepLinkConsumed?: () => void;
+};
+
+export function CompanyStudents({
+  chatScoutId = null,
+  onDeepLinkConsumed,
+}: CompanyStudentsProps) {
   const router = useRouter();
   const { logout } = useAuth();
   const [students, setStudents] = useState<StudentListItem[]>([]);
@@ -301,7 +309,11 @@ export function CompanyStudents() {
         )}
       </section>
 
-      <CompanySentScouts scouts={sentScouts} />
+      <CompanySentScouts
+        scouts={sentScouts}
+        chatScoutId={chatScoutId}
+        onDeepLinkConsumed={onDeepLinkConsumed}
+      />
 
       <StudentDetailModal
         student={detailStudent}

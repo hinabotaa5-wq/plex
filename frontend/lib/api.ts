@@ -4,6 +4,8 @@ import type {
   ChatMessage,
   CreateScoutPayload,
   MeResponse,
+  Notification,
+  NotificationsResponse,
   ProfileResponse,
   ReceivedScout,
   ScoutsResponse,
@@ -137,5 +139,21 @@ export function createMessage(scoutId: number, body: string) {
   return request<{ message: ChatMessage }>(`/api/v1/scouts/${scoutId}/messages`, {
     method: "POST",
     body: JSON.stringify({ message: { body } }),
+  });
+}
+
+export function fetchNotifications() {
+  return request<NotificationsResponse>("/api/v1/notifications");
+}
+
+export function markAllNotificationsAsRead() {
+  return request<{ unread_count: number }>("/api/v1/notifications/read_all", {
+    method: "PATCH",
+  });
+}
+
+export function markNotificationAsRead(id: number) {
+  return request<{ notification: Notification }>(`/api/v1/notifications/${id}/read`, {
+    method: "PATCH",
   });
 }

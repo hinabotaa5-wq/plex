@@ -1,14 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useCallback, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CompanyStudents } from "@/components/dashboard/CompanyStudents";
 import { StudentScoutInbox } from "@/components/dashboard/StudentScoutInbox";
 import { useAuth } from "@/components/AuthProvider";
 
-export default function DashboardPage() {
+function parseId(value: string | null): number | null {
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+}
+
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading } = useAuth();
+  const scoutId = parseId(searchParams.get("scoutId"));
+  const chatScoutId = parseId(searchParams.get("chatScoutId"));
 
   useEffect(() => {
     if (!loading && !user) {
@@ -16,14 +25,38 @@ export default function DashboardPage() {
     }
   }, [loading, user, router]);
 
+  const handleDeepLinkConsumed = useCallback(() => {
+    if (!searchParams.get("scoutId") && !searchParams.get("chatScoutId")) return;
+    router.replace("/dashboard", { scroll: false });
+  }, [router, searchParams]);
+
   if (loading || !user) {
     return <p className="p-8 text-center text-zinc-500">読み込み中...</p>;
   }
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-16">
-      {user.role === "company" && <CompanyStudents />}
-      {user.role === "student" && <StudentScoutInbox />}
+      {user.role === "company" && (
+        <CompanyStudents
+          chatScoutId={chatScoutId}
+          onDeepLinkConsumed={handleDeepLinkConsumed}
+        />
+      )}
+      {user.role === "student" && (
+        <StudentScoutInbox
+          scoutId={scoutId}
+          chatScoutId={chatScoutId}
+          onDeepLinkConsumed={handleDeepLinkConsumed}
+        />
+      )}
     </main>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<p className="p-8 text-center text-zinc-500">読み込み中...</p>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
