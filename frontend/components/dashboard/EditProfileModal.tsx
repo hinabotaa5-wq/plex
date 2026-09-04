@@ -125,22 +125,33 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
 
     try {
       if (user.role === "student") {
+        const clientErrors: string[] = [];
+        if (desiredLocation.length === 0) {
+          clientErrors.push("希望勤務地を選択してください");
+        }
+        if (availableWeekdays.length === 0) {
+          clientErrors.push("曜日を選択してください");
+        }
+        if (clientErrors.length > 0) {
+          setErrors(clientErrors);
+          return;
+        }
+
         await updateProfile({
           name,
           university,
           grade,
-          faculty: optional(faculty),
-          desired_job_type: optional(desiredJobType),
-          desired_location: desiredLocation.length > 0 ? desiredLocation : null,
-          available_days_per_week: optional(availableDaysPerWeek),
-          available_weekdays:
-            availableWeekdays.length > 0
-              ? WEEKDAYS.filter((day) => availableWeekdays.includes(day))
-              : null,
-          available_time_from: optional(availableTimeFrom),
-          available_time_to: optional(availableTimeTo),
-          self_pr: optional(selfPr),
-          gakuchika: optional(gakuchika),
+          faculty,
+          desired_job_type: desiredJobType,
+          desired_location: desiredLocation,
+          available_days_per_week: availableDaysPerWeek,
+          available_weekdays: WEEKDAYS.filter((day) =>
+            availableWeekdays.includes(day)
+          ),
+          available_time_from: availableTimeFrom,
+          available_time_to: availableTimeTo,
+          self_pr: selfPr,
+          gakuchika,
           skills: hasSkills ? optional(skills) : null,
           qualifications: hasQualifications ? optional(qualifications) : null,
           intern_experience: hasInternExperience ? optional(internExperience) : null,
@@ -149,14 +160,14 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
       } else {
         await updateProfile({
           name,
-          department: optional(department),
-          description: optional(description),
-          website_url: optional(websiteUrl),
-          industry: optional(industry),
-          number_of_employees: optional(numberOfEmployees),
-          salary: optional(salary),
-          location: optional(location),
-          recruiting_job_type: optional(recruitingJobType),
+          department,
+          description,
+          website_url: websiteUrl,
+          industry,
+          number_of_employees: numberOfEmployees,
+          salary,
+          location,
+          recruiting_job_type: recruitingJobType,
         });
       }
       await onSaved();
@@ -227,6 +238,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">学部</span>
               <input
                 type="text"
+                required
                 value={faculty}
                 onChange={(event) => setFaculty(event.target.value)}
                 className={inputClass}
@@ -236,6 +248,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">希望職種</span>
               <input
                 type="text"
+                required
                 value={desiredJobType}
                 onChange={(event) => setDesiredJobType(event.target.value)}
                 className={inputClass}
@@ -251,11 +264,12 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
             <label className="block">
               <span className="text-sm font-medium text-zinc-700">稼働可能日数</span>
               <select
+                required
                 value={availableDaysPerWeek}
                 onChange={(event) => setAvailableDaysPerWeek(event.target.value)}
                 className={inputClass}
               >
-                <option value="">未設定</option>
+                <option value="">選択してください</option>
                 {AVAILABLE_DAYS_PER_WEEK.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -300,6 +314,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <div className="mt-1 flex items-center gap-2">
                 <input
                   type="time"
+                  required
                   value={availableTimeFrom}
                   onChange={(event) => setAvailableTimeFrom(event.target.value)}
                   className={inputClass}
@@ -307,6 +322,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
                 <span className="text-sm text-zinc-500">〜</span>
                 <input
                   type="time"
+                  required
                   value={availableTimeTo}
                   onChange={(event) => setAvailableTimeTo(event.target.value)}
                   className={inputClass}
@@ -317,6 +333,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">自己PR</span>
               <textarea
                 rows={3}
+                required
                 value={selfPr}
                 onChange={(event) => setSelfPr(event.target.value)}
                 className={inputClass}
@@ -326,6 +343,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">ガクチカ</span>
               <textarea
                 rows={3}
+                required
                 value={gakuchika}
                 onChange={(event) => setGakuchika(event.target.value)}
                 className={inputClass}
@@ -348,6 +366,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               {hasSkills && (
                 <textarea
                   rows={3}
+                  required
                   value={skills}
                   onChange={(event) => setSkills(event.target.value)}
                   className={inputClass}
@@ -371,6 +390,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               {hasQualifications && (
                 <textarea
                   rows={3}
+                  required
                   value={qualifications}
                   onChange={(event) => setQualifications(event.target.value)}
                   className={inputClass}
@@ -394,6 +414,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               {hasInternExperience && (
                 <textarea
                   rows={3}
+                  required
                   value={internExperience}
                   onChange={(event) => setInternExperience(event.target.value)}
                   className={inputClass}
@@ -417,6 +438,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               {hasGithub && (
                 <input
                   type="url"
+                  required
                   value={githubUrl}
                   onChange={(event) => setGithubUrl(event.target.value)}
                   className={inputClass}
@@ -440,6 +462,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">部署名</span>
               <input
                 type="text"
+                required
                 value={department}
                 onChange={(event) => setDepartment(event.target.value)}
                 className={inputClass}
@@ -449,6 +472,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">業界</span>
               <input
                 type="text"
+                required
                 value={industry}
                 onChange={(event) => setIndustry(event.target.value)}
                 className={inputClass}
@@ -458,6 +482,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">従業員数</span>
               <input
                 type="text"
+                required
                 value={numberOfEmployees}
                 onChange={(event) => setNumberOfEmployees(event.target.value)}
                 className={inputClass}
@@ -467,6 +492,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">給与</span>
               <input
                 type="text"
+                required
                 value={salary}
                 onChange={(event) => setSalary(event.target.value)}
                 className={inputClass}
@@ -476,6 +502,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">勤務地</span>
               <input
                 type="text"
+                required
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
                 className={inputClass}
@@ -485,6 +512,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">採用職種</span>
               <input
                 type="text"
+                required
                 value={recruitingJobType}
                 onChange={(event) => setRecruitingJobType(event.target.value)}
                 className={inputClass}
@@ -494,6 +522,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">企業概要</span>
               <textarea
                 rows={3}
+                required
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 className={inputClass}
@@ -503,6 +532,7 @@ export function EditProfileModal({ user, open, onClose, onSaved }: EditProfileMo
               <span className="text-sm font-medium text-zinc-700">Webサイト URL</span>
               <input
                 type="url"
+                required
                 value={websiteUrl}
                 onChange={(event) => setWebsiteUrl(event.target.value)}
                 className={inputClass}

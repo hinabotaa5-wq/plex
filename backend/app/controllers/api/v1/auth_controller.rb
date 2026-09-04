@@ -35,9 +35,15 @@ module Api
           :password,
           :role,
           student_profile_attributes: [
-            :name, :university, :grade, :self_pr, :github_url
+            :name, :university, :grade, :faculty, :desired_job_type,
+            :self_pr, :gakuchika, :skills, :qualifications, :intern_experience,
+            :github_url, :available_days_per_week, :available_time_from, :available_time_to,
+            { desired_location: [], available_weekdays: [] }
           ],
-          company_profile_attributes: [ :name, :description, :website_url ]
+          company_profile_attributes: [
+            :name, :department, :description, :website_url,
+            :industry, :number_of_employees, :salary, :location, :recruiting_job_type
+          ]
         )
       end
 

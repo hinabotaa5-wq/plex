@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/components/AuthProvider";
+import { PrefectureSelector } from "@/components/ui/PrefectureSelector";
+import { AVAILABLE_DAYS_PER_WEEK, WEEKDAYS } from "@/lib/constants";
 import type { SignupPayload, UserRole } from "@/lib/types";
 
 function optional(value: string): string | undefined {
@@ -34,8 +36,29 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [university, setUniversity] = useState("");
   const [grade, setGrade] = useState("");
+  const [faculty, setFaculty] = useState("");
+  const [desiredJobType, setDesiredJobType] = useState("");
+  const [desiredLocation, setDesiredLocation] = useState<string[]>([]);
+  const [availableDaysPerWeek, setAvailableDaysPerWeek] = useState("");
+  const [availableWeekdays, setAvailableWeekdays] = useState<string[]>([]);
+  const [availableTimeFrom, setAvailableTimeFrom] = useState("");
+  const [availableTimeTo, setAvailableTimeTo] = useState("");
   const [selfPr, setSelfPr] = useState("");
+  const [gakuchika, setGakuchika] = useState("");
+  const [skills, setSkills] = useState("");
+  const [hasSkills, setHasSkills] = useState(false);
+  const [qualifications, setQualifications] = useState("");
+  const [hasQualifications, setHasQualifications] = useState(false);
+  const [internExperience, setInternExperience] = useState("");
+  const [hasInternExperience, setHasInternExperience] = useState(false);
   const [githubUrl, setGithubUrl] = useState("");
+  const [hasGithub, setHasGithub] = useState(false);
+  const [department, setDepartment] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [numberOfEmployees, setNumberOfEmployees] = useState("");
+  const [salary, setSalary] = useState("");
+  const [location, setLocation] = useState("");
+  const [recruitingJobType, setRecruitingJobType] = useState("");
   const [description, setDescription] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -47,21 +70,61 @@ export default function SignupPage() {
     }
   }, [loading, user, router]);
 
-  function handleRoleChange(nextRole: UserRole) {
-    setRole(nextRole);
-    setErrors([]);
+  function resetProfileFields() {
     setName("");
     setUniversity("");
     setGrade("");
+    setFaculty("");
+    setDesiredJobType("");
+    setDesiredLocation([]);
+    setAvailableDaysPerWeek("");
+    setAvailableWeekdays([]);
+    setAvailableTimeFrom("");
+    setAvailableTimeTo("");
     setSelfPr("");
+    setGakuchika("");
+    setSkills("");
+    setHasSkills(false);
+    setQualifications("");
+    setHasQualifications(false);
+    setInternExperience("");
+    setHasInternExperience(false);
     setGithubUrl("");
+    setHasGithub(false);
+    setDepartment("");
+    setIndustry("");
+    setNumberOfEmployees("");
+    setSalary("");
+    setLocation("");
+    setRecruitingJobType("");
     setDescription("");
     setWebsiteUrl("");
+  }
+
+  function handleRoleChange(nextRole: UserRole) {
+    setRole(nextRole);
+    setErrors([]);
+    resetProfileFields();
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrors([]);
+
+    if (role === "student") {
+      const clientErrors: string[] = [];
+      if (desiredLocation.length === 0) {
+        clientErrors.push("希望勤務地を選択してください");
+      }
+      if (availableWeekdays.length === 0) {
+        clientErrors.push("曜日を選択してください");
+      }
+      if (clientErrors.length > 0) {
+        setErrors(clientErrors);
+        return;
+      }
+    }
+
     setSubmitting(true);
 
     const payload: SignupPayload =
@@ -74,8 +137,25 @@ export default function SignupPage() {
               name,
               university,
               grade,
-              self_pr: optional(selfPr),
-              github_url: optional(githubUrl),
+              faculty,
+              desired_job_type: desiredJobType,
+              desired_location: desiredLocation,
+              available_days_per_week: availableDaysPerWeek,
+              available_weekdays: WEEKDAYS.filter((day) =>
+                availableWeekdays.includes(day)
+              ),
+              available_time_from: availableTimeFrom,
+              available_time_to: availableTimeTo,
+              self_pr: selfPr,
+              gakuchika,
+              skills: hasSkills ? optional(skills) : undefined,
+              qualifications: hasQualifications
+                ? optional(qualifications)
+                : undefined,
+              intern_experience: hasInternExperience
+                ? optional(internExperience)
+                : undefined,
+              github_url: hasGithub ? optional(githubUrl) : undefined,
             },
           }
         : {
@@ -84,8 +164,14 @@ export default function SignupPage() {
             role: "company",
             company_profile_attributes: {
               name,
-              description: optional(description),
-              website_url: optional(websiteUrl),
+              department,
+              industry,
+              number_of_employees: numberOfEmployees,
+              salary,
+              location,
+              recruiting_job_type: recruitingJobType,
+              description,
+              website_url: websiteUrl,
             },
           };
 
@@ -109,7 +195,7 @@ export default function SignupPage() {
 
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+      <div className="w-full max-w-xl rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
         <Link
           href="/"
           aria-label="トップに戻る"
@@ -209,23 +295,218 @@ export default function SignupPage() {
                 </select>
               </label>
               <label className="block">
+                <span className="text-sm font-medium text-zinc-700">学部</span>
+                <input
+                  type="text"
+                  required
+                  value={faculty}
+                  onChange={(event) => setFaculty(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">希望職種</span>
+                <input
+                  type="text"
+                  required
+                  value={desiredJobType}
+                  onChange={(event) => setDesiredJobType(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <div>
+                <span className="text-sm font-medium text-zinc-700">希望勤務地</span>
+                <PrefectureSelector
+                  selected={desiredLocation}
+                  onChange={setDesiredLocation}
+                />
+              </div>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">稼働可能日数</span>
+                <select
+                  required
+                  value={availableDaysPerWeek}
+                  onChange={(event) => setAvailableDaysPerWeek(event.target.value)}
+                  className={inputClass}
+                >
+                  <option value="">選択してください</option>
+                  {AVAILABLE_DAYS_PER_WEEK.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <fieldset>
+                <legend className="text-sm font-medium text-zinc-700">曜日</legend>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {WEEKDAYS.map((day) => {
+                    const checked = availableWeekdays.includes(day);
+                    return (
+                      <label
+                        key={day}
+                        className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm ${
+                          checked
+                            ? "border-zinc-900 bg-zinc-900 text-white"
+                            : "border-zinc-300 bg-white text-zinc-700"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() =>
+                            setAvailableWeekdays((current) =>
+                              current.includes(day)
+                                ? current.filter((item) => item !== day)
+                                : [...current, day]
+                            )
+                          }
+                          className="sr-only"
+                        />
+                        {day}
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
+              <div>
+                <span className="text-sm font-medium text-zinc-700">稼働可能時間</span>
+                <div className="mt-1 flex items-center gap-2">
+                  <input
+                    type="time"
+                    required
+                    value={availableTimeFrom}
+                    onChange={(event) => setAvailableTimeFrom(event.target.value)}
+                    className={inputClass}
+                  />
+                  <span className="text-sm text-zinc-500">〜</span>
+                  <input
+                    type="time"
+                    required
+                    value={availableTimeTo}
+                    onChange={(event) => setAvailableTimeTo(event.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+              <label className="block">
                 <span className="text-sm font-medium text-zinc-700">自己PR</span>
                 <textarea
                   rows={3}
+                  required
                   value={selfPr}
                   onChange={(event) => setSelfPr(event.target.value)}
                   className={inputClass}
                 />
               </label>
               <label className="block">
-                <span className="text-sm font-medium text-zinc-700">GitHub URL・ポートフォリオ URL</span>
-                <input
-                  type="url"
-                  value={githubUrl}
-                  onChange={(event) => setGithubUrl(event.target.value)}
+                <span className="text-sm font-medium text-zinc-700">ガクチカ</span>
+                <textarea
+                  rows={3}
+                  required
+                  value={gakuchika}
+                  onChange={(event) => setGakuchika(event.target.value)}
                   className={inputClass}
                 />
               </label>
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={hasSkills}
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setHasSkills(checked);
+                      if (!checked) setSkills("");
+                    }}
+                    className="size-4 rounded border-zinc-300"
+                  />
+                  <span className="text-sm font-medium text-zinc-700">ITスキル</span>
+                </label>
+                {hasSkills && (
+                  <textarea
+                    rows={3}
+                    required
+                    value={skills}
+                    onChange={(event) => setSkills(event.target.value)}
+                    className={inputClass}
+                  />
+                )}
+              </div>
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={hasQualifications}
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setHasQualifications(checked);
+                      if (!checked) setQualifications("");
+                    }}
+                    className="size-4 rounded border-zinc-300"
+                  />
+                  <span className="text-sm font-medium text-zinc-700">資格</span>
+                </label>
+                {hasQualifications && (
+                  <textarea
+                    rows={3}
+                    required
+                    value={qualifications}
+                    onChange={(event) => setQualifications(event.target.value)}
+                    className={inputClass}
+                  />
+                )}
+              </div>
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={hasInternExperience}
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setHasInternExperience(checked);
+                      if (!checked) setInternExperience("");
+                    }}
+                    className="size-4 rounded border-zinc-300"
+                  />
+                  <span className="text-sm font-medium text-zinc-700">インターン経験</span>
+                </label>
+                {hasInternExperience && (
+                  <textarea
+                    rows={3}
+                    required
+                    value={internExperience}
+                    onChange={(event) => setInternExperience(event.target.value)}
+                    className={inputClass}
+                  />
+                )}
+              </div>
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={hasGithub}
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setHasGithub(checked);
+                      if (!checked) setGithubUrl("");
+                    }}
+                    className="size-4 rounded border-zinc-300"
+                  />
+                  <span className="text-sm font-medium text-zinc-700">
+                    GitHub URL・ポートフォリオ URL
+                  </span>
+                </label>
+                {hasGithub && (
+                  <input
+                    type="url"
+                    required
+                    value={githubUrl}
+                    onChange={(event) => setGithubUrl(event.target.value)}
+                    className={inputClass}
+                  />
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -240,9 +521,70 @@ export default function SignupPage() {
                 />
               </label>
               <label className="block">
+                <span className="text-sm font-medium text-zinc-700">部署名</span>
+                <input
+                  type="text"
+                  required
+                  value={department}
+                  onChange={(event) => setDepartment(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">業界</span>
+                <input
+                  type="text"
+                  required
+                  value={industry}
+                  onChange={(event) => setIndustry(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">従業員数</span>
+                <input
+                  type="text"
+                  required
+                  value={numberOfEmployees}
+                  onChange={(event) => setNumberOfEmployees(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">給与</span>
+                <input
+                  type="text"
+                  required
+                  value={salary}
+                  onChange={(event) => setSalary(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">勤務地</span>
+                <input
+                  type="text"
+                  required
+                  value={location}
+                  onChange={(event) => setLocation(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-zinc-700">採用職種</span>
+                <input
+                  type="text"
+                  required
+                  value={recruitingJobType}
+                  onChange={(event) => setRecruitingJobType(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+              <label className="block">
                 <span className="text-sm font-medium text-zinc-700">企業概要</span>
                 <textarea
                   rows={3}
+                  required
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
                   className={inputClass}
@@ -252,6 +594,7 @@ export default function SignupPage() {
                 <span className="text-sm font-medium text-zinc-700">Webサイト URL</span>
                 <input
                   type="url"
+                  required
                   value={websiteUrl}
                   onChange={(event) => setWebsiteUrl(event.target.value)}
                   className={inputClass}

@@ -5,7 +5,14 @@ class CompanyProfile < ApplicationRecord
   has_many :scouts, dependent: :destroy
 
   validates :name, presence: true
-  validates :website_url, format: { with: URL_FORMAT }, allow_blank: true
+  validates :department, presence: true
+  validates :industry, presence: true
+  validates :number_of_employees, presence: true
+  validates :salary, presence: true
+  validates :location, presence: true
+  validates :recruiting_job_type, presence: true
+  validates :description, presence: true
+  validates :website_url, presence: true, format: { with: URL_FORMAT }
   validate :user_must_be_company
 
   private

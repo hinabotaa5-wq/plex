@@ -206,7 +206,18 @@ export type SignupPayload =
         name: string;
         university: string;
         grade: string;
-        self_pr?: string | null;
+        faculty: string;
+        desired_job_type: string;
+        desired_location: string[];
+        available_days_per_week: string;
+        available_weekdays: string[];
+        available_time_from: string;
+        available_time_to: string;
+        self_pr: string;
+        gakuchika: string;
+        skills?: string | null;
+        qualifications?: string | null;
+        intern_experience?: string | null;
         github_url?: string | null;
       };
     }
@@ -216,8 +227,14 @@ export type SignupPayload =
       role: "company";
       company_profile_attributes: {
         name: string;
-        description?: string | null;
-        website_url?: string | null;
+        department: string;
+        industry: string;
+        number_of_employees: string;
+        salary: string;
+        location: string;
+        recruiting_job_type: string;
+        description: string;
+        website_url: string;
       };
     };
 
