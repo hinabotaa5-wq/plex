@@ -45,6 +45,13 @@ export default function LoginPage() {
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-16">
       <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+        <Link
+          href="/"
+          aria-label="トップに戻る"
+          className="mb-3 inline-block text-lg leading-none text-zinc-500 hover:text-zinc-900"
+        >
+          ←
+        </Link>
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
           ログイン
         </h1>
