@@ -8,9 +8,8 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-start justify-center px-4 py-24">
-      <p className="text-sm font-medium text-zinc-500">インターンマッチング</p>
-      <h1 className="mt-2 text-4xl font-semibold tracking-tight text-zinc-900">
-        プレックス
+      <h1 className="text-4xl font-semibold tracking-tight text-zinc-900">
+        インターンマッチ
       </h1>
       <p className="mt-4 text-zinc-600">
         インターン生と企業をつなぐスカウトサービスです。

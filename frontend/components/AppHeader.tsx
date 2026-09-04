@@ -33,7 +33,7 @@ export function AppHeader() {
           onClick={handleBrandClick}
           className="text-sm font-semibold tracking-tight text-zinc-900"
         >
-          プレックス
+          インターンマッチ
         </a>
         <div className="flex items-center gap-1">
           <NotificationBell />

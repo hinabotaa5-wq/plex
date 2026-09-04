@@ -56,7 +56,7 @@ export default function LoginPage() {
           ログイン
         </h1>
         <p className="mt-2 text-sm text-zinc-500">
-          プレックスのアカウントでログインしてください。
+          インターンマッチのアカウントでログインしてください。
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">

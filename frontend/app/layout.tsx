@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "プレックス",
+  title: "インターンマッチ",
   description: "インターン生と企業をつなぐスカウトサービス",
 };
 
