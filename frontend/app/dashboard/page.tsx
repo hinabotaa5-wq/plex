@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CompanyDashboard } from "@/components/dashboard/CompanyDashboard";
-import { StudentScoutInbox } from "@/components/dashboard/StudentScoutInbox";
+import { StudentDashboard } from "@/components/dashboard/StudentDashboard";
 import { useAuth } from "@/components/AuthProvider";
 
 function parseId(value: string | null): number | null {
@@ -43,7 +43,7 @@ function DashboardContent() {
         />
       )}
       {user.role === "student" && (
-        <StudentScoutInbox
+        <StudentDashboard
           scoutId={scoutId}
           chatScoutId={chatScoutId}
           onDeepLinkConsumed={handleDeepLinkConsumed}
