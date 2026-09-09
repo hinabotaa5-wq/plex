@@ -1,5 +1,10 @@
 class Notification < ApplicationRecord
-  ACTION_TYPES = %w[scout_received message_received].freeze
+  ACTION_TYPES = %w[
+    scout_received
+    message_received
+    application_received
+    application_responded
+  ].freeze
 
   belongs_to :user
   belongs_to :notifiable, polymorphic: true

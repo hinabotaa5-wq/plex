@@ -41,6 +41,7 @@ module Api
           notifiable_type: notification.notifiable_type,
           notifiable_id: notification.notifiable_id,
           scout_id: scout_id_for(notification),
+          application_id: application_id_for(notification),
           created_at: notification.created_at
         }
       end
@@ -51,6 +52,15 @@ module Api
           notification.notifiable_id
         when Message
           notification.notifiable.scout_id
+        end
+      end
+
+      def application_id_for(notification)
+        case notification.notifiable
+        when RecruitmentApplication
+          notification.notifiable_id
+        when Message
+          notification.notifiable.recruitment_application_id
         end
       end
     end

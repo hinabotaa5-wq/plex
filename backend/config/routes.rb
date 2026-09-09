@@ -8,7 +8,10 @@ Rails.application.routes.draw do
       get "me", to: "auth#me"
       resource :profile, only: [ :show, :update ]
       resources :students, only: [ :index ]
-      resources :recruitments, only: [ :index, :show, :create, :update ]
+      resources :recruitments, only: [ :index, :show, :create, :update ] do
+        resources :applications, only: [ :create ], controller: "recruitment_applications"
+      end
+      resources :applications, only: [ :index, :update ], controller: "recruitment_applications"
       resources :notifications, only: [ :index ] do
         collection do
           patch :read_all
