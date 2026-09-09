@@ -11,6 +11,8 @@ import type {
   Recruitment,
   RecruitmentPayload,
   RecruitmentsResponse,
+  ApplicationsResponse,
+  StudentApplication,
   ScoutsResponse,
   ScoutStatus,
   SentScout,
@@ -178,4 +180,18 @@ export function updateRecruitment(id: number, payload: Partial<RecruitmentPayloa
     method: "PATCH",
     body: JSON.stringify({ recruitment: payload }),
   });
+}
+
+export function getApplications() {
+  return request<ApplicationsResponse>("/api/v1/applications");
+}
+
+export function createApplication(recruitmentId: number, body: string) {
+  return request<{ application: StudentApplication }>(
+    `/api/v1/recruitments/${recruitmentId}/applications`,
+    {
+      method: "POST",
+      body: JSON.stringify({ application: { body } }),
+    }
+  );
 }

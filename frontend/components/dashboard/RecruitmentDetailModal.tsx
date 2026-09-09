@@ -1,12 +1,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Recruitment } from "@/lib/types";
+import type { ApplicationStatus, Recruitment, StudentApplication } from "@/lib/types";
+
+const STATUS_LABEL: Record<ApplicationStatus, string> = {
+  sent: "応募済み",
+  accepted: "承諾済み",
+  declined: "辞退済み",
+};
 
 type RecruitmentDetailModalProps = {
   recruitment: Recruitment | null;
+  application?: StudentApplication | null;
   open: boolean;
   onClose: () => void;
+  onApply?: (recruitment: Recruitment) => void;
 };
 
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
@@ -21,8 +29,10 @@ function Field({ label, value }: { label: string; value: string | null | undefin
 
 export function RecruitmentDetailModal({
   recruitment,
+  application = null,
   open,
   onClose,
+  onApply,
 }: RecruitmentDetailModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -38,6 +48,7 @@ export function RecruitmentDetailModal({
   }, [open]);
 
   const company = recruitment?.company;
+  const canApply = Boolean(recruitment && !application && onApply);
 
   return (
     <dialog
@@ -48,8 +59,17 @@ export function RecruitmentDetailModal({
       {open && recruitment && (
         <div className="flex h-full max-h-[90vh] flex-col max-sm:max-h-none">
           <div className="border-b border-zinc-200 px-4 py-4 sm:px-6 max-sm:pt-[max(1rem,env(safe-area-inset-top))]">
-            <h2 className="text-lg font-semibold break-words text-zinc-900">{recruitment.title}</h2>
-            <p className="mt-1 text-sm text-zinc-500">{company?.name ?? "企業"}</p>
+            <div className="flex items-start justify-between gap-3 sm:gap-4">
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold break-words text-zinc-900">{recruitment.title}</h2>
+                <p className="mt-1 text-sm text-zinc-500">{company?.name ?? "企業"}</p>
+              </div>
+              {application && (
+                <span className="shrink-0 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
+                  {STATUS_LABEL[application.status]}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 py-4 text-sm sm:px-6">
@@ -93,12 +113,15 @@ export function RecruitmentDetailModal({
               </div>
             )}
 
-            <p className="rounded-lg bg-zinc-50 px-3 py-2 text-xs leading-5 text-zinc-500">
-              応募機能はまだありません。興味がある場合は、企業からのスカウトをお待ちください。
-            </p>
+            {application && (
+              <div className="border-t border-zinc-200 pt-4">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">応募文</h3>
+                <p className="whitespace-pre-wrap leading-6 text-zinc-700">{application.body}</p>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-col gap-2 border-t border-zinc-200 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end sm:px-6">
+          <div className="flex flex-col gap-2 border-t border-zinc-200 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:flex-wrap sm:justify-end sm:px-6">
             <button
               type="button"
               onClick={() => dialogRef.current?.close()}
@@ -106,6 +129,15 @@ export function RecruitmentDetailModal({
             >
               閉じる
             </button>
+            {canApply && (
+              <button
+                type="button"
+                onClick={() => onApply?.(recruitment)}
+                className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
+              >
+                応募する
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -16,7 +16,8 @@ const STATUS_LABEL: Record<RecruitmentStatus, string> = {
   closed: "終了",
 };
 
-function formatDate(value: string) {
+function formatDate(value: string | undefined) {
+  if (!value) return "";
   return new Date(value).toLocaleDateString("ja-JP");
 }
 

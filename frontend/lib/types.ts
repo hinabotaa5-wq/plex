@@ -128,7 +128,11 @@ export type ChatMessage = {
   sender_role: UserRole;
 };
 
-export type NotificationActionType = "scout_received" | "message_received";
+export type NotificationActionType =
+  | "scout_received"
+  | "message_received"
+  | "application_received"
+  | "application_responded";
 
 export type Notification = {
   id: number;
@@ -139,6 +143,7 @@ export type Notification = {
   notifiable_type: string;
   notifiable_id: number;
   scout_id: number | null;
+  application_id: number | null;
   created_at: string;
 };
 
@@ -175,8 +180,8 @@ export type Recruitment = {
   salary: string;
   period: string | null;
   status: RecruitmentStatus;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   company?: RecruitmentCompany;
 };
 
@@ -192,6 +197,20 @@ export type RecruitmentPayload = {
   salary: string;
   period?: string | null;
   status?: RecruitmentStatus;
+};
+
+export type ApplicationStatus = "sent" | "accepted" | "declined";
+
+export type StudentApplication = {
+  id: number;
+  status: ApplicationStatus;
+  body: string;
+  created_at: string;
+  recruitment: Recruitment & { company: RecruitmentCompany };
+};
+
+export type ApplicationsResponse = {
+  applications: StudentApplication[];
 };
 
 export type UpdateStudentProfilePayload = {
