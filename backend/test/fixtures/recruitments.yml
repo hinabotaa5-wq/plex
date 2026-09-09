@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company_profile: one
+  title: 夏季エンジニアインターン
+  job_type: エンジニア
+  description: Webアプリケーション開発に携わっていただきます。
+  location: 東京都
+  salary: 時給1,500円〜
+  period: 2ヶ月
+  status: 0
+
+two:
+  company_profile: two
+  title: デザイナーインターン
+  job_type: デザイナー
+  description: UI / UX デザインの実務を担当していただきます。
+  location: 大阪府
+  salary: 月給20万円〜
+  period:
+  status: 1

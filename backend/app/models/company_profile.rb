@@ -3,6 +3,7 @@ class CompanyProfile < ApplicationRecord
 
   belongs_to :user
   has_many :scouts, dependent: :destroy
+  has_many :recruitments, dependent: :destroy
 
   validates :name, presence: true
   validates :department, presence: true

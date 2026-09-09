@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_153600) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_09_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,6 +53,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_153600) do
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["user_id", "is_read"], name: "index_notifications_on_user_id_and_is_read"
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "recruitments", force: :cascade do |t|
+    t.bigint "company_profile_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.string "job_type", null: false
+    t.string "location", null: false
+    t.string "period"
+    t.string "salary", null: false
+    t.integer "status", default: 0, null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_profile_id"], name: "index_recruitments_on_company_profile_id"
+    t.index ["status"], name: "index_recruitments_on_status"
   end
 
   create_table "scouts", force: :cascade do |t|
@@ -104,6 +119,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_153600) do
   add_foreign_key "messages", "scouts", on_delete: :cascade
   add_foreign_key "messages", "users", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "recruitments", "company_profiles", on_delete: :cascade
   add_foreign_key "scouts", "company_profiles", on_delete: :cascade
   add_foreign_key "scouts", "student_profiles", on_delete: :cascade
   add_foreign_key "student_profiles", "users", on_delete: :cascade
