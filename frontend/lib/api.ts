@@ -8,6 +8,9 @@ import type {
   NotificationsResponse,
   ProfileResponse,
   ReceivedScout,
+  Recruitment,
+  RecruitmentPayload,
+  RecruitmentsResponse,
   ScoutsResponse,
   ScoutStatus,
   SentScout,
@@ -156,5 +159,23 @@ export function markAllNotificationsAsRead() {
 export function markNotificationAsRead(id: number) {
   return request<{ notification: Notification }>(`/api/v1/notifications/${id}/read`, {
     method: "PATCH",
+  });
+}
+
+export function getRecruitments() {
+  return request<RecruitmentsResponse>("/api/v1/recruitments");
+}
+
+export function createRecruitment(payload: RecruitmentPayload) {
+  return request<{ recruitment: Recruitment }>("/api/v1/recruitments", {
+    method: "POST",
+    body: JSON.stringify({ recruitment: payload }),
+  });
+}
+
+export function updateRecruitment(id: number, payload: Partial<RecruitmentPayload>) {
+  return request<{ recruitment: Recruitment }>(`/api/v1/recruitments/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ recruitment: payload }),
   });
 }

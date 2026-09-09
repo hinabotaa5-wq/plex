@@ -153,6 +153,47 @@ export type CreateScoutPayload = {
   body: string;
 };
 
+export type RecruitmentStatus = "published" | "closed";
+
+export type RecruitmentCompany = {
+  id: number;
+  name: string;
+  department: string | null;
+  description: string | null;
+  website_url: string | null;
+  industry: string | null;
+  number_of_employees: string | null;
+  location: string | null;
+};
+
+export type Recruitment = {
+  id: number;
+  title: string;
+  job_type: string;
+  description: string;
+  location: string;
+  salary: string;
+  period: string | null;
+  status: RecruitmentStatus;
+  created_at: string;
+  updated_at: string;
+  company?: RecruitmentCompany;
+};
+
+export type RecruitmentsResponse = {
+  recruitments: Recruitment[];
+};
+
+export type RecruitmentPayload = {
+  title: string;
+  job_type: string;
+  description: string;
+  location: string;
+  salary: string;
+  period?: string | null;
+  status?: RecruitmentStatus;
+};
+
 export type UpdateStudentProfilePayload = {
   name: string;
   university: string;
