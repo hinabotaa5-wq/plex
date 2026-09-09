@@ -79,7 +79,7 @@ Scout.find_or_create_by!(
   scout.status = :sent
 end
 
-Recruitment.find_or_create_by!(
+summer_engineer = Recruitment.find_or_create_by!(
   company_profile: company1.company_profile,
   title: "夏季エンジニアインターン"
 ) do |recruitment|
@@ -91,7 +91,7 @@ Recruitment.find_or_create_by!(
   recruitment.status = :published
 end
 
-Recruitment.find_or_create_by!(
+osaka_engineer = Recruitment.find_or_create_by!(
   company_profile: company2.company_profile,
   title: "エンジニアインターン"
 ) do |recruitment|
@@ -113,4 +113,36 @@ Recruitment.find_or_create_by!(
   recruitment.salary = "月給20万円〜"
   recruitment.period = nil
   recruitment.status = :closed
+end
+
+RecruitmentApplication.find_or_create_by!(
+  recruitment: summer_engineer,
+  student_profile: student1.student_profile
+) do |application|
+  application.body = "開発に携わりたく応募しました。GitHub の個人開発も見ていただけますと幸いです。"
+  application.status = :sent
+end
+
+accepted_application = RecruitmentApplication.find_or_create_by!(
+  recruitment: osaka_engineer,
+  student_profile: student2.student_profile
+) do |application|
+  application.body = "実務を通して学びたいです。週4日稼働できます。"
+  application.status = :accepted
+end
+
+RecruitmentApplication.find_or_create_by!(
+  recruitment: osaka_engineer,
+  student_profile: student1.student_profile
+) do |application|
+  application.body = "夏季インターンと並行して検討したく応募しました。"
+  application.status = :declined
+end
+
+if accepted_application.accepted?
+  Message.find_or_create_by!(
+    recruitment_application: accepted_application,
+    user: company2,
+    body: "応募ありがとうございます。来週の面談日程を調整しましょう。"
+  )
 end
