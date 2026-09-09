@@ -22,6 +22,7 @@ type ApplicationDetailModalProps = {
   onClose: () => void;
   onAccept: () => void;
   onDecline: () => void;
+  onMessage?: () => void;
 };
 
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
@@ -41,6 +42,7 @@ export function ApplicationDetailModal({
   onClose,
   onAccept,
   onDecline,
+  onMessage,
 }: ApplicationDetailModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -181,6 +183,15 @@ export function ApplicationDetailModal({
                   承諾
                 </button>
               </>
+            )}
+            {application.status === "accepted" && onMessage && (
+              <button
+                type="button"
+                onClick={onMessage}
+                className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
+              >
+                メッセージ
+              </button>
             )}
           </div>
         </div>

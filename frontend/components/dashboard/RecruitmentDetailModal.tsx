@@ -15,6 +15,7 @@ type RecruitmentDetailModalProps = {
   open: boolean;
   onClose: () => void;
   onApply?: (recruitment: Recruitment) => void;
+  onMessage?: () => void;
 };
 
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
@@ -33,6 +34,7 @@ export function RecruitmentDetailModal({
   open,
   onClose,
   onApply,
+  onMessage,
 }: RecruitmentDetailModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -129,6 +131,15 @@ export function RecruitmentDetailModal({
             >
               閉じる
             </button>
+            {application?.status === "accepted" && onMessage && (
+              <button
+                type="button"
+                onClick={onMessage}
+                className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
+              >
+                メッセージ
+              </button>
+            )}
             {canApply && (
               <button
                 type="button"

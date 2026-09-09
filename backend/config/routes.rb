@@ -11,7 +11,9 @@ Rails.application.routes.draw do
       resources :recruitments, only: [ :index, :show, :create, :update ] do
         resources :applications, only: [ :create ], controller: "recruitment_applications"
       end
-      resources :applications, only: [ :index, :update ], controller: "recruitment_applications"
+      resources :applications, only: [ :index, :update ], controller: "recruitment_applications" do
+        resources :messages, only: [ :index, :create ]
+      end
       resources :notifications, only: [ :index ] do
         collection do
           patch :read_all

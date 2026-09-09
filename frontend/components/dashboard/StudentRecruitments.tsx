@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApplyModal } from "@/components/dashboard/ApplyModal";
+import { ChatModal } from "@/components/dashboard/ChatModal";
 import { RecruitmentDetailModal } from "@/components/dashboard/RecruitmentDetailModal";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, getApplications, getRecruitments } from "@/lib/api";
@@ -21,9 +22,11 @@ function formatDate(value: string | undefined) {
 
 export function StudentRecruitments({
   applicationId = null,
+  chatApplicationId = null,
   onDeepLinkConsumed,
 }: {
   applicationId?: number | null;
+  chatApplicationId?: number | null;
   onDeepLinkConsumed?: () => void;
 }) {
   const router = useRouter();
@@ -34,6 +37,7 @@ export function StudentRecruitments({
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Recruitment | null>(null);
   const [applying, setApplying] = useState<Recruitment | null>(null);
+  const [chatApplication, setChatApplication] = useState<StudentApplication | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -75,10 +79,24 @@ export function StudentRecruitments({
     setOpenedApplicationId(null);
   }
 
+  const [openedChatId, setOpenedChatId] = useState<number | null>(null);
+  if (!loading && chatApplicationId != null && openedChatId !== chatApplicationId) {
+    setOpenedChatId(chatApplicationId);
+    const application = applications.find((item) => item.id === chatApplicationId);
+    if (application) {
+      setSelected(null);
+      setChatApplication(application);
+    }
+  }
+  if (chatApplicationId == null && openedChatId != null) {
+    setOpenedChatId(null);
+  }
+
   useEffect(() => {
-    if (loading || applicationId == null) return;
+    if (loading) return;
+    if (applicationId == null && chatApplicationId == null) return;
     onDeepLinkConsumed?.();
-  }, [loading, applicationId, onDeepLinkConsumed]);
+  }, [loading, applicationId, chatApplicationId, onDeepLinkConsumed]);
 
   const applicationsByRecruitmentId = new Map(
     applications.map((application) => [application.recruitment.id, application])
@@ -101,7 +119,13 @@ export function StudentRecruitments({
 
   function handleOpenFromApplication(application: StudentApplication) {
     const listed = recruitments.find((item) => item.id === application.recruitment.id);
-    setSelected(listed ?? application.recruitment);
+    setChatApplication(null);
+    window.setTimeout(() => setSelected(listed ?? application.recruitment), 0);
+  }
+
+  function handleOpenChat(application: StudentApplication) {
+    setSelected(null);
+    window.setTimeout(() => setChatApplication(application), 0);
   }
 
   if (loading) {
@@ -212,7 +236,7 @@ export function StudentRecruitments({
                 </div>
                 <p className="mt-4 text-sm text-zinc-700 line-clamp-2">{application.body}</p>
                 <p className="mt-2 text-xs text-zinc-500">応募日: {formatDate(application.created_at)}</p>
-                <div className="mt-4">
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                   <button
                     type="button"
                     onClick={() => handleOpenFromApplication(application)}
@@ -220,6 +244,15 @@ export function StudentRecruitments({
                   >
                     詳細を見る
                   </button>
+                  {application.status === "accepted" && (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenChat(application)}
+                      className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
+                    >
+                      メッセージ
+                    </button>
+                  )}
                 </div>
               </li>
             ))}
@@ -233,6 +266,11 @@ export function StudentRecruitments({
         open={selected !== null}
         onClose={() => setSelected(null)}
         onApply={handleOpenApply}
+        onMessage={
+          selectedApplication?.status === "accepted"
+            ? () => handleOpenChat(selectedApplication)
+            : undefined
+        }
       />
 
       <ApplyModal
@@ -240,6 +278,13 @@ export function StudentRecruitments({
         open={applying !== null}
         onClose={() => setApplying(null)}
         onApplied={handleApplied}
+      />
+
+      <ChatModal
+        applicationId={chatApplication?.id ?? null}
+        title={chatApplication ? chatApplication.recruitment.company.name : ""}
+        open={chatApplication !== null}
+        onClose={() => setChatApplication(null)}
       />
     </div>
   );

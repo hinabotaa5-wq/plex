@@ -10,19 +10,22 @@ type CompanyTab = "students" | "recruitments" | "applications";
 type CompanyDashboardProps = {
   chatScoutId?: number | null;
   applicationId?: number | null;
+  chatApplicationId?: number | null;
   onDeepLinkConsumed?: () => void;
 };
 
 export function CompanyDashboard({
   chatScoutId = null,
   applicationId = null,
+  chatApplicationId = null,
   onDeepLinkConsumed,
 }: CompanyDashboardProps) {
   const [tab, setTab] = useState<CompanyTab>(
-    applicationId != null ? "applications" : "students"
+    applicationId != null || chatApplicationId != null ? "applications" : "students"
   );
   const [prevChatScoutId, setPrevChatScoutId] = useState(chatScoutId);
   const [prevApplicationId, setPrevApplicationId] = useState(applicationId);
+  const [prevChatApplicationId, setPrevChatApplicationId] = useState(chatApplicationId);
 
   if (chatScoutId !== prevChatScoutId) {
     setPrevChatScoutId(chatScoutId);
@@ -34,6 +37,13 @@ export function CompanyDashboard({
   if (applicationId !== prevApplicationId) {
     setPrevApplicationId(applicationId);
     if (applicationId != null) {
+      setTab("applications");
+    }
+  }
+
+  if (chatApplicationId !== prevChatApplicationId) {
+    setPrevChatApplicationId(chatApplicationId);
+    if (chatApplicationId != null) {
       setTab("applications");
     }
   }
@@ -96,6 +106,7 @@ export function CompanyDashboard({
       {tab === "applications" && (
         <CompanyApplications
           applicationId={applicationId}
+          chatApplicationId={chatApplicationId}
           onDeepLinkConsumed={onDeepLinkConsumed}
         />
       )}

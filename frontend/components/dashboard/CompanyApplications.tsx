@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApplicationDetailModal } from "@/components/dashboard/ApplicationDetailModal";
+import { ChatModal } from "@/components/dashboard/ChatModal";
 import { useAuth } from "@/components/AuthProvider";
 import { ApiError, getCompanyApplications, updateApplicationStatus } from "@/lib/api";
 import type { ApplicationStatus, CompanyApplication } from "@/lib/types";
@@ -19,11 +20,13 @@ function formatDate(value: string) {
 
 type CompanyApplicationsProps = {
   applicationId?: number | null;
+  chatApplicationId?: number | null;
   onDeepLinkConsumed?: () => void;
 };
 
 export function CompanyApplications({
   applicationId = null,
+  chatApplicationId = null,
   onDeepLinkConsumed,
 }: CompanyApplicationsProps) {
   const router = useRouter();
@@ -33,6 +36,7 @@ export function CompanyApplications({
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [detailId, setDetailId] = useState<number | null>(applicationId);
+  const [chatApplication, setChatApplication] = useState<CompanyApplication | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,14 +67,29 @@ export function CompanyApplications({
   if (applicationId !== prevApplicationId) {
     setPrevApplicationId(applicationId);
     if (applicationId != null) {
+      setChatApplication(null);
       setDetailId(applicationId);
     }
   }
 
+  const [openedChatId, setOpenedChatId] = useState<number | null>(null);
+  if (!loading && chatApplicationId != null && openedChatId !== chatApplicationId) {
+    setOpenedChatId(chatApplicationId);
+    const application = applications.find((item) => item.id === chatApplicationId);
+    if (application) {
+      setDetailId(null);
+      setChatApplication(application);
+    }
+  }
+  if (chatApplicationId == null && openedChatId != null) {
+    setOpenedChatId(null);
+  }
+
   useEffect(() => {
-    if (loading || applicationId == null) return;
+    if (loading) return;
+    if (applicationId == null && chatApplicationId == null) return;
     onDeepLinkConsumed?.();
-  }, [loading, applicationId, onDeepLinkConsumed]);
+  }, [loading, applicationId, chatApplicationId, onDeepLinkConsumed]);
 
   async function handleStatus(id: number, status: Extract<ApplicationStatus, "accepted" | "declined">) {
     setUpdatingId(id);
@@ -90,6 +109,11 @@ export function CompanyApplications({
     } finally {
       setUpdatingId(null);
     }
+  }
+
+  function handleOpenChat(application: CompanyApplication) {
+    setDetailId(null);
+    window.setTimeout(() => setChatApplication(application), 0);
   }
 
   const detail = applications.find((item) => item.id === detailId) ?? null;
@@ -129,7 +153,7 @@ export function CompanyApplications({
               </div>
               <p className="mt-4 text-sm text-zinc-700 line-clamp-2">{application.body}</p>
               <p className="mt-2 text-xs text-zinc-500">応募日: {formatDate(application.created_at)}</p>
-              <div className="mt-4">
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                 <button
                   type="button"
                   onClick={() => setDetailId(application.id)}
@@ -137,6 +161,15 @@ export function CompanyApplications({
                 >
                   詳細を見る
                 </button>
+                {application.status === "accepted" && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenChat(application)}
+                    className="w-full rounded-lg bg-zinc-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 sm:w-auto"
+                  >
+                    メッセージ
+                  </button>
+                )}
               </div>
             </li>
           ))}
@@ -154,6 +187,14 @@ export function CompanyApplications({
         onDecline={() => {
           if (detail) void handleStatus(detail.id, "declined");
         }}
+        onMessage={detail ? () => handleOpenChat(detail) : undefined}
+      />
+
+      <ChatModal
+        applicationId={chatApplication?.id ?? null}
+        title={chatApplication ? `${chatApplication.student.name}さん` : ""}
+        open={chatApplication !== null}
+        onClose={() => setChatApplication(null)}
       />
     </section>
   );

@@ -19,6 +19,7 @@ function DashboardContent() {
   const scoutId = parseId(searchParams.get("scoutId"));
   const chatScoutId = parseId(searchParams.get("chatScoutId"));
   const applicationId = parseId(searchParams.get("applicationId"));
+  const chatApplicationId = parseId(searchParams.get("chatApplicationId"));
 
   useEffect(() => {
     if (!loading && !user) {
@@ -30,7 +31,8 @@ function DashboardContent() {
     if (
       !searchParams.get("scoutId") &&
       !searchParams.get("chatScoutId") &&
-      !searchParams.get("applicationId")
+      !searchParams.get("applicationId") &&
+      !searchParams.get("chatApplicationId")
     ) {
       return;
     }
@@ -47,6 +49,7 @@ function DashboardContent() {
         <CompanyDashboard
           chatScoutId={chatScoutId}
           applicationId={applicationId}
+          chatApplicationId={chatApplicationId}
           onDeepLinkConsumed={handleDeepLinkConsumed}
         />
       )}
@@ -55,6 +58,7 @@ function DashboardContent() {
           scoutId={scoutId}
           chatScoutId={chatScoutId}
           applicationId={applicationId}
+          chatApplicationId={chatApplicationId}
           onDeepLinkConsumed={handleDeepLinkConsumed}
         />
       )}

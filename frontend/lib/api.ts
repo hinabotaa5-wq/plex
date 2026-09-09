@@ -150,6 +150,17 @@ export function createMessage(scoutId: number, body: string) {
   });
 }
 
+export function getApplicationMessages(applicationId: number) {
+  return request<{ messages: ChatMessage[] }>(`/api/v1/applications/${applicationId}/messages`);
+}
+
+export function createApplicationMessage(applicationId: number, body: string) {
+  return request<{ message: ChatMessage }>(`/api/v1/applications/${applicationId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ message: { body } }),
+  });
+}
+
 export function fetchNotifications() {
   return request<NotificationsResponse>("/api/v1/notifications");
 }

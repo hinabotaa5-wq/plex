@@ -4,17 +4,24 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
-import { ApiError, createMessage, getMessages } from "@/lib/api";
+import { ApiError, createApplicationMessage, createMessage, getApplicationMessages, getMessages } from "@/lib/api";
 import type { ChatMessage } from "@/lib/types";
 
 type ChatModalProps = {
-  scoutId: number | null;
+  scoutId?: number | null;
+  applicationId?: number | null;
   title: string;
   open: boolean;
   onClose: () => void;
 };
 
-export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
+export function ChatModal({
+  scoutId = null,
+  applicationId = null,
+  title,
+  open,
+  onClose,
+}: ChatModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const router = useRouter();
@@ -25,6 +32,8 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const threadId = applicationId ?? scoutId;
+  const isApplication = applicationId != null;
 
   useEffect(() => {
     setMounted(true);
@@ -34,7 +43,7 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    if (open && scoutId) {
+    if (open && threadId) {
       setBody("");
       setError(null);
       if (!dialog.open) {
@@ -52,14 +61,17 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
     } else if (dialog.open) {
       dialog.close();
     }
-  }, [open, scoutId]);
+  }, [open, threadId]);
 
   useEffect(() => {
-    if (!open || !scoutId) return;
+    if (!open || !threadId) return;
 
     let cancelled = false;
     setLoading(true);
-    getMessages(scoutId)
+    const fetchMessages = isApplication
+      ? getApplicationMessages(threadId)
+      : getMessages(threadId);
+    fetchMessages
       .then((data) => {
         if (!cancelled) setMessages(data.messages);
       })
@@ -79,7 +91,7 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
     return () => {
       cancelled = true;
     };
-  }, [open, scoutId, logout, router]);
+  }, [open, threadId, isApplication, logout, router]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
@@ -115,12 +127,14 @@ export function ChatModal({ scoutId, title, open, onClose }: ChatModalProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!scoutId || body.trim() === "") return;
+    if (!threadId || body.trim() === "") return;
 
     setSubmitting(true);
     setError(null);
     try {
-      const data = await createMessage(scoutId, body.trim());
+      const data = isApplication
+        ? await createApplicationMessage(threadId, body.trim())
+        : await createMessage(threadId, body.trim());
       setMessages((current) => [...current, data.message]);
       setBody("");
     } catch (err: unknown) {
