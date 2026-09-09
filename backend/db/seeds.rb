@@ -78,3 +78,39 @@ Scout.find_or_create_by!(
   scout.body = "山田さんの GitHub を拝見し、ぜひ一度カジュアルにお話できればと思いご連絡しました。"
   scout.status = :sent
 end
+
+Recruitment.find_or_create_by!(
+  company_profile: company1.company_profile,
+  title: "夏季エンジニアインターン"
+) do |recruitment|
+  recruitment.job_type = "エンジニア"
+  recruitment.description = "Webアプリケーション開発に携わっていただきます。企画から実装、レビューまで一連の開発を体験できます。"
+  recruitment.location = "東京都"
+  recruitment.salary = "時給1,500円〜"
+  recruitment.period = "2ヶ月"
+  recruitment.status = :published
+end
+
+Recruitment.find_or_create_by!(
+  company_profile: company2.company_profile,
+  title: "エンジニアインターン"
+) do |recruitment|
+  recruitment.job_type = "エンジニア"
+  recruitment.description = "自社 Web サービスの機能開発を担当していただきます。チームでの開発経験を積みたい方を歓迎します。"
+  recruitment.location = "大阪府"
+  recruitment.salary = "月給20万円〜"
+  recruitment.period = "3ヶ月〜"
+  recruitment.status = :published
+end
+
+Recruitment.find_or_create_by!(
+  company_profile: company2.company_profile,
+  title: "デザイナーインターン"
+) do |recruitment|
+  recruitment.job_type = "デザイナー"
+  recruitment.description = "UI / UX デザインの実務を担当していただきます。"
+  recruitment.location = "大阪府"
+  recruitment.salary = "月給20万円〜"
+  recruitment.period = nil
+  recruitment.status = :closed
+end
