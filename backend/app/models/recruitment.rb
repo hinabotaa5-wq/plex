@@ -1,5 +1,6 @@
 class Recruitment < ApplicationRecord
   belongs_to :company_profile
+  has_many :recruitment_applications, dependent: :destroy
 
   enum :status, { published: 0, closed: 1 }
 

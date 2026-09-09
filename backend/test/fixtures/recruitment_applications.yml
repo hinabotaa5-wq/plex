@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  recruitment: one
+  student_profile: one
+  body: 開発に携わりたく応募しました。
+  status: 0
+
+two:
+  recruitment: one
+  student_profile: two
+  body: 実務を通して学びたいです。
+  status: 1

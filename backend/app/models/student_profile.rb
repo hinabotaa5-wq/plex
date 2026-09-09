@@ -6,6 +6,7 @@ class StudentProfile < ApplicationRecord
 
   belongs_to :user
   has_many :scouts, dependent: :destroy
+  has_many :recruitment_applications, dependent: :destroy
 
   before_validation :normalize_list_fields
 

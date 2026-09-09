@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_09_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_09_224401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -33,11 +33,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_140000) do
   create_table "messages", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
-    t.bigint "scout_id", null: false
+    t.bigint "recruitment_application_id"
+    t.bigint "scout_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["recruitment_application_id"], name: "index_messages_on_recruitment_application_id"
     t.index ["scout_id"], name: "index_messages_on_scout_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
+    t.check_constraint "(scout_id IS NULL) <> (recruitment_application_id IS NULL)", name: "messages_scout_xor_application"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -53,6 +56,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_140000) do
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["user_id", "is_read"], name: "index_notifications_on_user_id_and_is_read"
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "recruitment_applications", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.bigint "recruitment_id", null: false
+    t.integer "status", default: 0, null: false
+    t.bigint "student_profile_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recruitment_id", "student_profile_id"], name: "idx_applications_on_recruitment_and_student", unique: true
+    t.index ["recruitment_id"], name: "index_recruitment_applications_on_recruitment_id"
+    t.index ["student_profile_id"], name: "index_recruitment_applications_on_student_profile_id"
   end
 
   create_table "recruitments", force: :cascade do |t|
@@ -116,9 +131,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_140000) do
   end
 
   add_foreign_key "company_profiles", "users", on_delete: :cascade
+  add_foreign_key "messages", "recruitment_applications", on_delete: :cascade
   add_foreign_key "messages", "scouts", on_delete: :cascade
   add_foreign_key "messages", "users", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "recruitment_applications", "recruitments", on_delete: :cascade
+  add_foreign_key "recruitment_applications", "student_profiles", on_delete: :cascade
   add_foreign_key "recruitments", "company_profiles", on_delete: :cascade
   add_foreign_key "scouts", "company_profiles", on_delete: :cascade
   add_foreign_key "scouts", "student_profiles", on_delete: :cascade
