@@ -213,6 +213,25 @@ export type ApplicationsResponse = {
   applications: StudentApplication[];
 };
 
+export type CompanyApplicationRecruitment = {
+  id: number;
+  title: string;
+  job_type: string;
+  location: string;
+  salary: string;
+  period: string | null;
+  status: RecruitmentStatus;
+};
+
+export type CompanyApplication = {
+  id: number;
+  status: ApplicationStatus;
+  body: string;
+  created_at: string;
+  recruitment: CompanyApplicationRecruitment;
+  student: StudentListItem;
+};
+
 export type UpdateStudentProfilePayload = {
   name: string;
   university: string;

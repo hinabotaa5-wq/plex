@@ -19,7 +19,13 @@ function formatDate(value: string | undefined) {
   return new Date(value).toLocaleDateString("ja-JP");
 }
 
-export function StudentRecruitments() {
+export function StudentRecruitments({
+  applicationId = null,
+  onDeepLinkConsumed,
+}: {
+  applicationId?: number | null;
+  onDeepLinkConsumed?: () => void;
+}) {
   const router = useRouter();
   const { logout } = useAuth();
   const [recruitments, setRecruitments] = useState<Recruitment[]>([]);
@@ -55,6 +61,24 @@ export function StudentRecruitments() {
       cancelled = true;
     };
   }, [logout, router]);
+
+  const [openedApplicationId, setOpenedApplicationId] = useState<number | null>(null);
+  if (!loading && applicationId != null && openedApplicationId !== applicationId) {
+    setOpenedApplicationId(applicationId);
+    const application = applications.find((item) => item.id === applicationId);
+    if (application) {
+      const listed = recruitments.find((item) => item.id === application.recruitment.id);
+      setSelected(listed ?? application.recruitment);
+    }
+  }
+  if (applicationId == null && openedApplicationId != null) {
+    setOpenedApplicationId(null);
+  }
+
+  useEffect(() => {
+    if (loading || applicationId == null) return;
+    onDeepLinkConsumed?.();
+  }, [loading, applicationId, onDeepLinkConsumed]);
 
   const applicationsByRecruitmentId = new Map(
     applications.map((application) => [application.recruitment.id, application])

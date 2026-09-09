@@ -9,22 +9,34 @@ type StudentTab = "scouts" | "recruitments";
 type StudentDashboardProps = {
   scoutId?: number | null;
   chatScoutId?: number | null;
+  applicationId?: number | null;
   onDeepLinkConsumed?: () => void;
 };
 
 export function StudentDashboard({
   scoutId = null,
   chatScoutId = null,
+  applicationId = null,
   onDeepLinkConsumed,
 }: StudentDashboardProps) {
-  const [tab, setTab] = useState<StudentTab>("scouts");
   const hasScoutDeepLink = scoutId != null || chatScoutId != null;
+  const [tab, setTab] = useState<StudentTab>(
+    hasScoutDeepLink ? "scouts" : applicationId != null ? "recruitments" : "scouts"
+  );
   const [prevHasDeepLink, setPrevHasDeepLink] = useState(hasScoutDeepLink);
+  const [prevApplicationId, setPrevApplicationId] = useState(applicationId);
 
   if (hasScoutDeepLink !== prevHasDeepLink) {
     setPrevHasDeepLink(hasScoutDeepLink);
     if (hasScoutDeepLink) {
       setTab("scouts");
+    }
+  }
+
+  if (applicationId !== prevApplicationId) {
+    setPrevApplicationId(applicationId);
+    if (applicationId != null) {
+      setTab("recruitments");
     }
   }
 
@@ -70,7 +82,10 @@ export function StudentDashboard({
           onDeepLinkConsumed={onDeepLinkConsumed}
         />
       ) : (
-        <StudentRecruitments />
+        <StudentRecruitments
+          applicationId={applicationId}
+          onDeepLinkConsumed={onDeepLinkConsumed}
+        />
       )}
     </div>
   );

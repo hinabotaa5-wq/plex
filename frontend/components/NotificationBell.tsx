@@ -14,6 +14,9 @@ import type { Notification } from "@/lib/types";
 const POLL_INTERVAL_MS = 30_000;
 
 function destinationFor(notification: Notification): string {
+  if (notification.application_id) {
+    return `/dashboard?applicationId=${notification.application_id}`;
+  }
   if (!notification.scout_id) return "/dashboard";
   if (notification.action_type === "message_received") {
     return `/dashboard?chatScoutId=${notification.scout_id}`;

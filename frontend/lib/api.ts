@@ -12,7 +12,9 @@ import type {
   RecruitmentPayload,
   RecruitmentsResponse,
   ApplicationsResponse,
+  ApplicationStatus,
   StudentApplication,
+  CompanyApplication,
   ScoutsResponse,
   ScoutStatus,
   SentScout,
@@ -194,4 +196,18 @@ export function createApplication(recruitmentId: number, body: string) {
       body: JSON.stringify({ application: { body } }),
     }
   );
+}
+
+export function getCompanyApplications() {
+  return request<{ applications: CompanyApplication[] }>("/api/v1/applications");
+}
+
+export function updateApplicationStatus(
+  id: number,
+  status: Extract<ApplicationStatus, "accepted" | "declined">
+) {
+  return request<{ application: CompanyApplication }>(`/api/v1/applications/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ application: { status } }),
+  });
 }

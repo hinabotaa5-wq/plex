@@ -18,6 +18,7 @@ function DashboardContent() {
   const { user, loading } = useAuth();
   const scoutId = parseId(searchParams.get("scoutId"));
   const chatScoutId = parseId(searchParams.get("chatScoutId"));
+  const applicationId = parseId(searchParams.get("applicationId"));
 
   useEffect(() => {
     if (!loading && !user) {
@@ -26,7 +27,13 @@ function DashboardContent() {
   }, [loading, user, router]);
 
   const handleDeepLinkConsumed = useCallback(() => {
-    if (!searchParams.get("scoutId") && !searchParams.get("chatScoutId")) return;
+    if (
+      !searchParams.get("scoutId") &&
+      !searchParams.get("chatScoutId") &&
+      !searchParams.get("applicationId")
+    ) {
+      return;
+    }
     router.replace("/dashboard", { scroll: false });
   }, [router, searchParams]);
 
@@ -39,6 +46,7 @@ function DashboardContent() {
       {user.role === "company" && (
         <CompanyDashboard
           chatScoutId={chatScoutId}
+          applicationId={applicationId}
           onDeepLinkConsumed={handleDeepLinkConsumed}
         />
       )}
@@ -46,6 +54,7 @@ function DashboardContent() {
         <StudentDashboard
           scoutId={scoutId}
           chatScoutId={chatScoutId}
+          applicationId={applicationId}
           onDeepLinkConsumed={handleDeepLinkConsumed}
         />
       )}
