@@ -1,4 +1,4 @@
-const TOKEN_KEY = "plex.token";
+const TOKEN_KEY = "intern_match.token";
 
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
