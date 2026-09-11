@@ -17,7 +17,7 @@ brew install postgresql@16
 brew services start postgresql@16
 ```
 
-接続情報は `config/database.yml` です。開発 DB は `plex_development`、テスト DB は `plex_test` です。ユーザー名・パスワード・ホストは環境に合わせて調整してください。
+接続情報は `config/database.yml` です。開発 DB は `intern_match_development`、テスト DB は `intern_match_test` です。ユーザー名・パスワード・ホストは環境に合わせて調整してください。
 
 ## セットアップ
 
